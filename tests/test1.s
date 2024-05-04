@@ -1,0 +1,2 @@
+.txt
+mov rax, rbx
