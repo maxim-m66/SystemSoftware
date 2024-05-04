@@ -1,2 +1,1 @@
-.txt
 mov rax, rbx
