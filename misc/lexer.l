@@ -1,55 +1,6 @@
 %{
 #include <stdio.h>
 
-enum Tokens {
-  ERROR = -1,
-  END,
-  GLOBAL,
-  EXTERN,
-  SECTION,
-  WORD,
-  SKIP,
-  ASCII,
-  EQU,
-  SYMBOL,
-  COMMA,
-  LABEL,
-  INTEGER,
-  HALT,
-  INT,
-  IRET,
-  CALL,
-  RET,
-  JMP,
-  BEQ,
-  BNE,
-  BGT,
-  PUSH,
-  POP,
-  XCHG,
-  ADD,
-  SUB,
-  MUL,
-  DIV,
-  NOT,
-  AND,
-  OR,
-  XOR,
-  SHL,
-  SHR,
-  LD,
-  ST,
-  CSRRD,
-  CSRWR,
-  REGISTER,
-  SYSREG,
-  IMMED,
-  REGIND,
-  REGINDREL,
-  WHITESPACE,
-  NEWLINE
-};
-
 %}
 
 spc [ ]*
@@ -74,8 +25,19 @@ reg "%"(("r"{digit}[0-5]?)|"pc"|"sp")
 ".skip" {return SKIP;}
 ".ascii" {return ASCII;}
 ".equ" {return EQU;}
-{symbol} {return SYMBOL;}
 "," {return COMMA;}
+"\"".*"\""[\n] {return STRING;}
+"+"|"-"|"*"|"/" {return OPERATOR;}
+"halt"|"int"|"iret"|"ret" {return INONE;}
+"call"|"jmp" {return IPCOP;}
+"beq"|"bne"|"bgt" {return IPCREGREGOP;}
+"push"|"pop"|"not" {return IREG;}
+"xchg"|"add"|"sub"|"mul"|"div"|"and"|"or"|"xor"|"shl"|"shr" {return IREGREG;}
+"ld" {return LD;}
+"st" {return ST;}
+"csrrd" {return CSRRD;}
+"csrwr" {return CSRWR;}
+{symbol} {return SYMBOL;}
 {symbol}":" {return LABEL;}
 {integer} {return INTEGER;}
 {reg} {return REGISTER;}
@@ -83,12 +45,16 @@ reg "%"(("r"{digit}[0-5]?)|"pc"|"sp")
 ("$"{integer})|("$"{symbol}) {return IMMED;}
 "["{reg}"]" {return REGIND;}
 "["{reg}{spc}"+"{spc}({integer}|{symbol})"]" {return REGINDREL;}
-[ \t]+ {return WHITESPACE;}
-[\n]
-(.)* {return -100;}
+[ \t]+
+[\n] {return NEWLINE;}
+"#"(.)* {return COMMENT;}
 %%
 
 int main() {
+  /*
+
+
+*/
   while(1) {
     printf("%d\n", yylex());
   }
