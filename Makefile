@@ -1,7 +1,7 @@
 # Output files
 LEXER_OUT = misc/lexer.cpp
 LEXER_HEADER = misc/lexer.hpp
-PARSER_OUT = misc/parser.cpp
+PARSER_OUT = misc/parser.cpp misc/parser.hpp
 ASEMBLER_OUT = asembler
 
 # Input files
