@@ -25,10 +25,10 @@ MSG ?= "Update"
 all: asembler run
 
 asembler: $(ASEMBLER_IN) lexer parser
-	g++ -o asembler src/asembler.cpp misc/lexer.cpp misc/parser.cpp
+	$(COMPILE) $(ASEMBLER_FLAGS) $(ASEMBLER_IN) $(LEXER_OUT) $(PARSER_OUT)
 
 run: asembler
-	./asembler tests/test1.s
+	./$(ASEMBLER_OUT) tests/test1.s
 
 lexer: $(LEXER_IN)
 	$(LEX) $(LEX_FLAGS) $(LEXER_IN)
@@ -37,10 +37,11 @@ parser: $(PARSER_IN)
 	$(PARSE) $(PARSE_FLAGS) $(PARSER_IN)
 
 clean:
-	rm -f asembler tests/*.o misc/parser.cpp misc/lexer.cpp misc/parser.hpp misc/lexer.hpp
+	rm -f $(LEXER_OUT) $(LEXER_HEADER) $(PARSER_OUT) $(ASEMBLER_OUT) tests/*.o
 
 git:
 	git add .
 	git commit -m "${MSG}"
 	git push -u origin master
+
 .PHONY: all clean asembler run lexer parser
