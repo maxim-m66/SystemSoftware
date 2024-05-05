@@ -72,25 +72,28 @@ int main(int argc, char **argv) {
     ofstream output;
     output.open(output_filename);
 
-    do {
+    for (int lineN = 0; !input.eof(); lineN++) {
         string line;
         getline(input, line);
         yy_scan_string(line.c_str());
 		int a;
-		cout << line;
+		output << line;
 		int numSpaces = (40 - line.length());  // Estimate the number of tabs needed
-	    for (int i = 0; i < numSpaces; i++) {
-	        cout << ' ';
+	    for (int i = 0; i < numSpaces - 1; i++) {
+	        output << ' ';
 	    }
 		while ((a = yylex()) != 0) {
 			if (a == yytokentype::ERROR) {
-				cout << "ERROR" << endl;
-				return 0;
+                output << " ERROR";
+				cout << "unrecognized token on line:" << lineN << endl;
+				output.close();
+                return 0;
 			}
 			else
-				cout << getTokenName((yytokentype)a) << " ";
+				output << " " << getTokenName((yytokentype)a);
 		}
-		cout << endl;
-        yyparse();
+		output << endl;
+        //yyparse();
     } while (!input.eof());
+    output.close();
 }

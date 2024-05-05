@@ -26,8 +26,7 @@ ld my_counter, %r1
 ld $1, %r2
 add %r2, %r1
 st %r1, my_counter
-finish:
-pop %r2
+finish:pop %r2
 pop %r1
 iret
 .end
