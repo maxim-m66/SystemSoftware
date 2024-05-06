@@ -2,8 +2,21 @@
 #include <stdio.h>
 #include <fstream>
 #include "../inc/lexer.hpp"
+#include "../inc/section.hpp"
 
 extern std::ofstream output;
+
+extern std::unordered_map<std::string, uint8> mnemonic;
+
+Section &section;
+
+uint8 instruction[8] = {};
+
+void reset() {
+    for (int i = 0; i < 8; i++) {
+        instruction[i] = 0;
+    }
+}
 
 void yyerror(const char *s);
 %}
@@ -46,6 +59,7 @@ extern: EXTERN symbol_list terminate {
 };
 
 section: SECTION SYMBOL terminate {
+    section = Section::get_section($2);
     output << "section";
 };
 
@@ -66,47 +80,83 @@ equ: EQU SYMBOL COMMA expression terminate {
 };
 
 inone: INONE terminate {
+    reset();
+    instruction[0] = mnemonic[$1];
+    section.get() = Section::make_word(instruction);
     output << "inone";
 };
 
 ipcop: IPCOP value terminate {
+    reset();
+    instruction[0] = mnemonic[$1];
+    section.get() = Section::make_word(instruction);
     output << "ipcop";
 }
     | IPCOP IMMED terminate {
+    reset();
+    instruction[0] = mnemonic[$1];
+    section.get() = Section::make_word(instruction);
     output << "ipcop";
 };
 
 ipcregregop: IPCREGREGOP REGISTER COMMA REGISTER COMMA value terminate {
+    reset();
+    instruction[0] = mnemonic[$1];
+    section.get() = Section::make_word(instruction);
     output << "ipcregregop";
 }
     | IPCREGREGOP REGISTER COMMA REGISTER COMMA IMMED terminate {
+    reset();
+    instruction[0] = mnemonic[$1];
+    section.get() = Section::make_word(instruction);
     output << "ipcregregop";
 };
 
 ireg: IREG REGISTER terminate {
+    reset();
+    instruction[0] = mnemonic[$1];
+    section.get() = Section::make_word(instruction);
     output << "ireg";
 };
 
 iregreg: IREGREG REGISTER COMMA REGISTER terminate {
+    reset();
+    instruction[0] = mnemonic[$1];
+    section.get() = Section::make_word(instruction);
     output << "iregreg";
 };
 
 ld: LD IMMED COMMA REGISTER terminate {
+    reset();
+    instruction[0] = mnemonic[$1];
+    section.get() = Section::make_word(instruction);
     output << "ld";
 }
     | LD SYMBOL COMMA REGISTER terminate {
+    reset();
+    instruction[0] = mnemonic[$1];
+    section.get() = Section::make_word(instruction);
     output << "ld";
 };
 
 st: ST REGISTER COMMA SYMBOL terminate {
+    reset();
+    instruction[0] = mnemonic[$1];
+    section.get() = Section::make_word(instruction);
     output << "st";
 };
 
 csrrd: CSRRD SYSREG COMMA REGISTER terminate {
+    reset();
+    instruction[0] = mnemonic[$1];
+    section.get() = Section::make_word(instruction);
     output << "csrrd";
 };
 
 csrwr: CSRWR REGISTER COMMA SYSREG terminate {
+    reset();
+    instruction[0] = mnemonic[$1];
+    section.get() = Section::make_word(instruction);
     output << "csrwr";
 };
 

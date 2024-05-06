@@ -1,9 +1,9 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-#include <sstream>
 #include "../inc/lexer.hpp"
 #include "../inc/parser.hpp"
+#include "../inc/section.hpp"
 
 using namespace std;
 
@@ -49,7 +49,22 @@ string getTokenName(yytokentype token) {
 
 int main(int argc, char **argv) {
     string input_filename, output_filename;
-    
+
+	Section mySection = Section::get_section("text");
+
+	mySection.next() = 10;
+
+	mySection.next() = 20;
+
+	uint8 niz[8] = {0b1110, 0b0101, 0b1100, 0b1111, 0b0101, 0b1000, 0b0000, 0b0001};
+
+	mySection.next() = Section::make_word(niz);
+
+	cout << mySection;
+
+	if (argc != 2 && argc != 4)
+
+	return 0;
     if (argc == 2) {
         input_filename = argv[1];
         output_filename = input_filename;

@@ -49,12 +49,6 @@ cmake_ninja_workdir = /home/ss/resenje/cmake-build-debug/
 
 build cmake_object_order_depends_target_resenje: phony || CMakeFiles/resenje.dir
 
-build CMakeFiles/resenje.dir/main.cpp.o: CXX_COMPILER__resenje_unscanned_Debug /home/ss/resenje/main.cpp || cmake_object_order_depends_target_resenje
-  DEP_FILE = CMakeFiles/resenje.dir/main.cpp.o.d
-  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
-  OBJECT_DIR = CMakeFiles/resenje.dir
-  OBJECT_FILE_DIR = CMakeFiles/resenje.dir
-
 build CMakeFiles/resenje.dir/src/lexer.cpp.o: CXX_COMPILER__resenje_unscanned_Debug /home/ss/resenje/src/lexer.cpp || cmake_object_order_depends_target_resenje
   DEP_FILE = CMakeFiles/resenje.dir/src/lexer.cpp.o.d
   FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
@@ -79,6 +73,12 @@ build CMakeFiles/resenje.dir/src/section.cpp.o: CXX_COMPILER__resenje_unscanned_
   OBJECT_DIR = CMakeFiles/resenje.dir
   OBJECT_FILE_DIR = CMakeFiles/resenje.dir/src
 
+build CMakeFiles/resenje.dir/src/codes.cpp.o: CXX_COMPILER__resenje_unscanned_Debug /home/ss/resenje/src/codes.cpp || cmake_object_order_depends_target_resenje
+  DEP_FILE = CMakeFiles/resenje.dir/src/codes.cpp.o.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles/resenje.dir
+  OBJECT_FILE_DIR = CMakeFiles/resenje.dir/src
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target resenje
@@ -87,7 +87,7 @@ build CMakeFiles/resenje.dir/src/section.cpp.o: CXX_COMPILER__resenje_unscanned_
 #############################################
 # Link the executable resenje
 
-build resenje: CXX_EXECUTABLE_LINKER__resenje_Debug CMakeFiles/resenje.dir/main.cpp.o CMakeFiles/resenje.dir/src/lexer.cpp.o CMakeFiles/resenje.dir/src/parser.cpp.o CMakeFiles/resenje.dir/src/asembler.cpp.o CMakeFiles/resenje.dir/src/section.cpp.o
+build resenje: CXX_EXECUTABLE_LINKER__resenje_Debug CMakeFiles/resenje.dir/src/lexer.cpp.o CMakeFiles/resenje.dir/src/parser.cpp.o CMakeFiles/resenje.dir/src/asembler.cpp.o CMakeFiles/resenje.dir/src/section.cpp.o CMakeFiles/resenje.dir/src/codes.cpp.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/resenje.dir
   POST_BUILD = :
