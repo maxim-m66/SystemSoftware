@@ -2,10 +2,12 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include "../misc/lexer.hpp"
-#include "../misc/parser.hpp"
+#include "../inc/lexer.hpp"
+#include "../inc/parser.hpp"
 
 using namespace std;
+
+ofstream output;
 
 string getTokenName(yytokentype token) {
     switch (token) {
@@ -69,7 +71,6 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-    ofstream output;
     output.open(output_filename);
 
     for (int lineN = 0; !input.eof(); lineN++) {
@@ -82,7 +83,8 @@ int main(int argc, char **argv) {
 	    for (int i = 0; i < numSpaces - 1; i++) {
 	        output << ' ';
 	    }
-		while ((a = yylex()) != 0) {
+        yyparse();
+		/*while ((a = yylex()) != 0) {
 			if (a == yytokentype::ERROR) {
                 output << " ERROR";
 				cout << "unrecognized token on line:" << lineN << endl;
@@ -91,9 +93,8 @@ int main(int argc, char **argv) {
 			}
 			else
 				output << " " << getTokenName((yytokentype)a);
-		}
+		}*/
 		output << endl;
-        //yyparse();
     } while (!input.eof());
     output.close();
 }

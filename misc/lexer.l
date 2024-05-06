@@ -1,6 +1,6 @@
 %{
 #include <stdio.h>
-#include "parser.hpp"
+#include "../inc/parser.hpp"
 %}
 
 spc [ ]*

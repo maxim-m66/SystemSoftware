@@ -1,0 +1,52 @@
+# file: handler.s                      
+.equ term_out, 0xFFFFFF00              equ
+.equ term_in, 0xFFFFFF04               equ
+.equ ascii_code, 84 # ascii(T)         equ
+.extern my_counter                     extern
+.global handler                        global
+.section my_code_handler               section
+handler:                               label
+push %r1                               ireg
+push %r2                               ireg
+csrrd %cause, %r1                      csrrd
+ld $2, %r2                             ld
+beq %r1, %r2, my_isr_timer             ipcregregop
+ld $3, %r2                             ld
+beq %r1, %r2, my_isr_terminal          ipcregregop
+# obrada prekida od tajmera            
+my_isr_timer:                          label
+ld $ascii_code , %r1                   ld
+st %r1, term_out                       st
+jmp finish                             ipcop
+# obrada prekida od terminala          
+my_isr_terminal:                       label
+ld term_in, %r1                        ld
+st %r1, term_out                       st
+ld my_counter, %r1                     ld
+ld $1, %r2                             ld
+add %r2, %r1                           iregreg
+st %r1, my_counter                     st
+finish:pop %r2                         labelireg
+pop %r1                                ireg
+iret                                   inone
+.end                                   end
+# file: main.s                         
+.equ tim_cfg, 0xFFFFFF10               equ
+.equ init_sp, 0xFFFFFF00               equ
+.extern handler                        extern
+.section my_code_main                  section
+ld $init_sp, %sp                       ld
+ld $handler, %r1                       ld
+csrwr %r1, %handler                    csrwr
+ld $0x1, %r1                           ld
+st %r1, tim_cfg                        st
+wait:                                  label
+ld my_counter, %r1                     ld
+ld $5, %r2                             ld
+bne %r1, %r2, wait                     ipcregregop
+halt                                   inone
+.global my_counter                     global
+.section my_data                       section
+my_counter:                            label
+.word 0                                word
+.end                                   end
