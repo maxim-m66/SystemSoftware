@@ -4,7 +4,7 @@
 
 #include "../inc/codes.hpp"
 
-std::unordered_map<std::string, uint8> Codes::memonics = {
+std::unordered_map<std::string, uint8> Codes::memonic = {
     {"halt", 0b0000},
     {"push", 0b0001},
     {"call", 0b0010},

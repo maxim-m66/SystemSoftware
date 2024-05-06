@@ -62,9 +62,8 @@ int main(int argc, char **argv) {
 
 	cout << mySection;
 
-	if (argc != 2 && argc != 4)
+	if (argc != 2 && argc != 4) return 0;
 
-	return 0;
     if (argc == 2) {
         input_filename = argv[1];
         output_filename = input_filename;
@@ -92,23 +91,12 @@ int main(int argc, char **argv) {
         string line;
         getline(input, line);
         yy_scan_string(line.c_str());
-		int a;
 		output << line;
 		int numSpaces = (40 - line.length());  // Estimate the number of tabs needed
 	    for (int i = 0; i < numSpaces - 1; i++) {
 	        output << ' ';
 	    }
         yyparse();
-		/*while ((a = yylex()) != 0) {
-			if (a == yytokentype::ERROR) {
-                output << " ERROR";
-				cout << "unrecognized token on line:" << lineN << endl;
-				output.close();
-                return 0;
-			}
-			else
-				output << " " << getTokenName((yytokentype)a);
-		}*/
 		output << endl;
     } while (!input.eof());
     output.close();

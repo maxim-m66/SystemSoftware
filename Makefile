@@ -8,7 +8,7 @@ PARSER_HEADER = inc/parser.hpp
 # Input files
 LEXER_IN = misc/lexer.l
 PARSER_IN = misc/parser.y
-ASEMBLER_IN = src/asembler.cpp src/section.cpp
+ASEMBLER_IN = src/asembler.cpp src/section.cpp src/codes.cpp
 
 # Tools
 LEX = flex
