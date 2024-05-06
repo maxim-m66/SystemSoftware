@@ -11,6 +11,8 @@ Section &section = Section::get_section("aaa");
 
 uint8 instruction[8] = {};
 
+int i;
+
 void reset() {
     for (int i = 0; i < 8; i++) {
         instruction[i] = 0;
