@@ -1,0 +1,3 @@
+/home/ss/resenje/cmake-build-debug/CMakeFiles/resenje.dir
+/home/ss/resenje/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/ss/resenje/cmake-build-debug/CMakeFiles/rebuild_cache.dir
