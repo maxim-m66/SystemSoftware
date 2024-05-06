@@ -1,11 +1,18 @@
-class Section {
+#include <string>
+#include <vector>
 
+typedef unsigned int uint32;
+
+class Section {
 public:
     Section();
-    ~Section();
+
+    uint32& next();
 
 protected:
-                void print();
+
 private:
- 
+    static std::hashmap<std::string, std::vector<uint32>> sections;
+    std::vector<uint32> words;
+    int line_count;
 };
