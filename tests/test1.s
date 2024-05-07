@@ -26,7 +26,8 @@ ld my_counter, %r1
 ld $1, %r2
 add %r2, %r1
 st %r1, my_counter
-finish:pop %r2
+finish:
+pop %r2
 pop %r1
 iret
 .end
@@ -44,6 +45,7 @@ wait:
 ld my_counter, %r1
 ld $5, %r2
 bne %r1, %r2, wait
+int
 halt
 .global my_counter
 .section my_data

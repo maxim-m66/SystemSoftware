@@ -6,10 +6,10 @@
 #include "section.hpp"
 
 class Codes {
-    static std::unordered_map<std::string, uint8> memonic;
-    static std::unordered_map<std::string, uint8> modifiers;
-    static std::unordered_map<std::string, uint8> sysregs;
-    static std::unordered_map<std::string, uint8> operators;
+public:
+    static std::unordered_map<std::string, uint8> opcode;
+    static std::unordered_map<std::string, uint8> mod;
+    static std::unordered_map<std::string, uint8> reg;
 };
 
 #endif //CODES_HPP

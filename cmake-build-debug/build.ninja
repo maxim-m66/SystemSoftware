@@ -79,6 +79,12 @@ build CMakeFiles/resenje.dir/src/codes.cpp.o: CXX_COMPILER__resenje_unscanned_De
   OBJECT_DIR = CMakeFiles/resenje.dir
   OBJECT_FILE_DIR = CMakeFiles/resenje.dir/src
 
+build CMakeFiles/resenje.dir/src/table.cpp.o: CXX_COMPILER__resenje_unscanned_Debug /home/ss/resenje/src/table.cpp || cmake_object_order_depends_target_resenje
+  DEP_FILE = CMakeFiles/resenje.dir/src/table.cpp.o.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles/resenje.dir
+  OBJECT_FILE_DIR = CMakeFiles/resenje.dir/src
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target resenje
@@ -87,7 +93,7 @@ build CMakeFiles/resenje.dir/src/codes.cpp.o: CXX_COMPILER__resenje_unscanned_De
 #############################################
 # Link the executable resenje
 
-build resenje: CXX_EXECUTABLE_LINKER__resenje_Debug CMakeFiles/resenje.dir/src/lexer.cpp.o CMakeFiles/resenje.dir/src/parser.cpp.o CMakeFiles/resenje.dir/src/asembler.cpp.o CMakeFiles/resenje.dir/src/section.cpp.o CMakeFiles/resenje.dir/src/codes.cpp.o
+build resenje: CXX_EXECUTABLE_LINKER__resenje_Debug CMakeFiles/resenje.dir/src/lexer.cpp.o CMakeFiles/resenje.dir/src/parser.cpp.o CMakeFiles/resenje.dir/src/asembler.cpp.o CMakeFiles/resenje.dir/src/section.cpp.o CMakeFiles/resenje.dir/src/codes.cpp.o CMakeFiles/resenje.dir/src/table.cpp.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/resenje.dir
   POST_BUILD = :

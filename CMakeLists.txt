@@ -11,4 +11,6 @@ add_executable(resenje
         inc/section.hpp
         src/codes.cpp
         inc/codes.hpp
-        src/codes.cpp)
+        src/codes.cpp
+        src/table.cpp
+        inc/table.hpp)

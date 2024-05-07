@@ -4,14 +4,13 @@
 #include "../inc/lexer.hpp"
 #include "../inc/section.hpp"
 #include "../inc/codes.hpp"
+#include <bitset>
 
 extern std::ofstream output;
 
 Section &section = Section::get_section("aaa");
 
 uint8 instruction[8] = {};
-
-int i;
 
 void reset() {
     for (int i = 0; i < 8; i++) {
@@ -22,12 +21,16 @@ void reset() {
 void yyerror(const char *s);
 %}
 
-%token END GLOBAL EXTERN SECTION WORD SKIP ASCII EQU //directives
-%token INONE IPCOP IPCREGREGOP IREG IREGREG LD ST CSRRD CSRWR //instructions
-%token SYMBOL INTEGER REGISTER SYSREG IMMED REGIND REGINDREL //operand types
-%token COMMA STRING LABEL COMMENT OPERATOR //miscleanious
-%token NEWLINE
-%token ERROR
+%union {
+    const char *str;
+}
+
+%token<str> END GLOBAL EXTERN SECTION WORD SKIP ASCII EQU //directives
+%token<str> INONE IPCOP IPCREGREGOP IREG IREGREG LD ST CSRRD CSRWR //instructions
+%token<str> SYMBOL INTEGER REGISTER SYSREG IMMED REGIND REGINDREL //operand types
+%token<str> COMMA STRING LABEL COMMENT OPERATOR //miscellaneous
+%token<str> NEWLINE
+%token<str> ERROR
 
 %%
 
@@ -72,18 +75,20 @@ skip: SKIP value terminate {
 };
 
 ascii: ASCII STRING terminate {
-    output << "ascii";
+    output << "ascii" << $1;
 };
 
 equ: EQU SYMBOL COMMA expression terminate {
-    output << "equ";
+    output << "equ " << $1 << " " << $2 << " " << $3;
 };
 
 inone: INONE terminate {
     reset();
-     
-    section.next() = Section::make_word(instruction);
-    output << "inone";
+    instruction[0] = Codes::opcode[$1];
+    int word = Section::make_word(instruction);
+    section.next() = word;
+    std::bitset<32> binary(word);
+    output << "inone " << binary.to_string();
 };
 
 ipcop: IPCOP value terminate {
@@ -121,9 +126,15 @@ ireg: IREG REGISTER terminate {
 
 iregreg: IREGREG REGISTER COMMA REGISTER terminate {
     reset();
-     
-    section.next() = Section::make_word(instruction);
-    output << "iregreg";
+    instruction[0] = Codes::opcode[$1];
+    instruction[1] = Codes::mod[$1];
+    if ("xchg" != $2) instruction[2] = Codes::reg[$4];
+    instruction[3] = Codes::reg[$2];
+    instruction[4] = Codes::reg[$4];
+    int word = Section::make_word(instruction);
+    section.next() = word ;//Section::make_word(instruction);
+    std::bitset<32> binary(word);
+    output << "iregreg " << binary.to_string();
 };
 
 ld: LD IMMED COMMA REGISTER terminate {
