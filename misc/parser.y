@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <fstream>
+#include <iostream>
 #include "../inc/lexer.hpp"
 #include "../inc/section.hpp"
 #include "../inc/codes.hpp"
@@ -129,7 +130,7 @@ branch: BRANCH REGISTER COMMA REGISTER COMMA value terminate {
     std::bitset<32> binary(word);
     output << "branch " << binary.to_string();
 } | BRANCH REGISTER COMMA REGISTER COMMA IMMED terminate {
-    const char *number = $2 + 1;
+    const char *number = $6 + 1;
     fill(Codes::opcode[$1], Codes::mod[$1], 0, Codes::reg[$2], Codes::reg[$4], to_int(number));
     int word = Section::make_word(instruction);
     section.next() = word;
@@ -236,10 +237,10 @@ int to_int(const char *string) {
     else if (string[1] == 'h') base = 16;
     else if (string[1] == 'o') base = 8;
     else if (string[1] == 'b') base = 2;
-    if (base != 2) start = 2;
+    if (base != 10) start = 2;
     int ret = digits[string[start]];
     for(int i = start + 1; i < end; i++)
-        ret = ret*base + digits[string[start]];
+        ret = ret*base + digits[string[i]];
     return ret;
 }
 
@@ -248,9 +249,8 @@ void fill(uint8 opcode, uint8 mod, uint8 a, uint8 b, uint8 c, int displacement) 
     instruction[1] = mod;
     instruction[2] = a;
     instruction[3] = b;
-    instruction[4] = c;
-    instruction[5] = displacement & 0xF00;
-    instruction[6] = displacement & 0xF0;
+    instruction[5] = (displacement & 0xF00) >> 8;
+    instruction[6] = (displacement & 0xF0) >> 4;
     instruction[7] = displacement & 0xF;
 }
 
