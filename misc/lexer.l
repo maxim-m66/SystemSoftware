@@ -8,7 +8,11 @@ digit [0-9]
 decimal {digit}+
 hexadigit [0-9]|[A-F]|[a-f]
 hexa "0x"({hexadigit})+
-integer {decimal}|{hexa}
+octadigit [0-7]
+octal "0o"({octadigit})+
+bindigit [0-1]
+binary "0b"({bindigit})+
+integer {decimal}|{hexa}|{octal}|{binary}
 lowercase [a-z]
 uppercase [A-Z]
 letter {lowercase}|{uppercase}|"_"
@@ -30,11 +34,16 @@ reg "%"(("r"{digit}[0-5]?)|"pc"|"sp")
 ".equ" { yylval.str = strdup(yytext); return EQU; }
 "\"".*"\""[\n] { yylval.str = strdup(yytext); return STRING; }
 "+"|"-"|"*"|"/" { yylval.str = strdup(yytext); return OPERATOR; }
-"halt"|"int"|"iret"|"ret" { yylval.str = strdup(yytext); return INONE; }
-"call"|"jmp" { yylval.str = strdup(yytext); return IPCOP; }
-"beq"|"bne"|"bgt" { yylval.str = strdup(yytext); return IPCREGREGOP; }
-"push"|"pop"|"not" { yylval.str = strdup(yytext); return IREG; }
-"xchg"|"add"|"sub"|"mul"|"div"|"and"|"or"|"xor"|"shl"|"shr" { yylval.str = strdup(yytext); return IREGREG; }
+"halt"|"int" { yylval.str = strdup(yytext); return INONE; }
+"ret" { yylval.str = strdup(yytext); return RET; }
+"iret" { yylval.str = strdup(yytext); return IRET; }
+"call"|"jmp" { yylval.str = strdup(yytext); return JUMP; }
+"beq"|"bne"|"bgt" { yylval.str = strdup(yytext); return BRANCH; }
+"push" { yylval.str = strdup(yytext); return PUSH; }
+"pop" { yylval.str = strdup(yytext); return POP; }
+"add"|"sub"|"mul"|"div"|"and"|"or"|"xor"|"shl"|"shr" { yylval.str = strdup(yytext); return ALO; }
+"not" { yylval.str = strdup(yytext); return NOT; }
+"xchg" { yylval.str = strdup(yytext); return XCHG; }
 "ld" { yylval.str = strdup(yytext); return LD; }
 "st" { yylval.str = strdup(yytext); return ST; }
 "csrrd" { yylval.str = strdup(yytext); return CSRRD; }

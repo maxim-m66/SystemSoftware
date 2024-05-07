@@ -47,10 +47,14 @@ std::unordered_map<std::string, uint8> Codes::mod{
     {"shl", 0b0000},
     {"shr", 0b0001},
     {"st", 0b0000},
+    {"push", 0b0001},
     {"csrrd", 0b0000},
     {"mv", 0b0001},
     {"regindrel", 0b0010},
-    {"csrwr", 0b0100}
+    {"csrwr", 0b0100},
+    {"pop", 0b0011},
+    {"ret", 0b0011},
+    {"iret", 0b0011}
 };
 
 std::unordered_map<std::string, uint8> Codes::reg {

@@ -20,11 +20,12 @@ Section& Section::get_section(const std::string& name) {
     return *Section::sections[name];
 }
 
-uint32 Section::make_word(const uint8* nibbles) {
+uint32 Section::make_word(uint8* nibbles) {
     uint32 word = 0;
     for (int i = 0; i < 8; i++) {
         word <<= 4;
         word |= nibbles[i];
+        nibbles[i] = 0;
     }
     return word;
 }

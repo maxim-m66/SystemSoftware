@@ -1,10 +1,5 @@
 # file: handler.s
-.equ term_out, 0xFFFFFF00
-.equ term_in, 0xFFFFFF04
-.equ ascii_code, 84 # ascii(T)
-.extern my_counter
-.global handler
-.section my_code_handler
+.section txt
 handler:
 push %r1
 push %r2
@@ -17,6 +12,10 @@ beq %r1, %r2, my_isr_terminal
 my_isr_timer:
 ld $ascii_code , %r1
 st %r1, term_out
+add %r1, %r1
+not %r2
+pop %r1
+ret
 jmp finish
 # obrada prekida od terminala
 my_isr_terminal:
@@ -25,6 +24,7 @@ st %r1, term_out
 ld my_counter, %r1
 ld $1, %r2
 add %r2, %r1
+xchg %pc, %r1
 st %r1, my_counter
 finish:
 pop %r2
@@ -32,10 +32,6 @@ pop %r1
 iret
 .end
 # file: main.s
-.equ tim_cfg, 0xFFFFFF10
-.equ init_sp, 0xFFFFFF00
-.extern handler
-.section my_code_main
 ld $init_sp, %sp
 ld $handler, %r1
 csrwr %r1, %handler
@@ -47,8 +43,3 @@ ld $5, %r2
 bne %r1, %r2, wait
 int
 halt
-.global my_counter
-.section my_data
-my_counter:
-.word 0
-.end

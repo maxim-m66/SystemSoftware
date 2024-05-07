@@ -12,7 +12,7 @@ public:
 
     static Section& get_section(const std::string& name);
 
-    static uint32 make_word(const uint8 *nibbles);
+    static uint32 make_word(uint8 *nibbles);
 
     friend std::ostream& operator<<(std::ostream& os, const Section& section);
 

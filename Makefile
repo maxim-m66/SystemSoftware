@@ -25,10 +25,10 @@ MSG ?= "Update"
 
 all: lexer parser asembler run
 
-asembler: $(ASEMBLER_IN) $(LEXER_OUT) $(PARSER_OUT)
+asembler: $(ASEMBLER_IN) lexer parser
 	$(COMPILE) $(ASEMBLER_FLAGS) $(ASEMBLER_IN) $(LEXER_OUT) $(PARSER_OUT)
 
-run: $(ASEMBLER_OUT)
+run:
 	./$(ASEMBLER_OUT) tests/test1.s
 
 lexer: $(LEXER_IN)
@@ -41,7 +41,7 @@ parser: $(PARSER_IN)
 clean:
 	rm -f $(LEXER_OUT) $(LEXER_HEADER) $(PARSER_OUT) $(PARSER_HEADER) $(ASEMBLER_OUT) tests/*.o
 
-git:
+git: clean
 	git add .
 	git commit -m "${MSG}"
 	git push -u origin master
