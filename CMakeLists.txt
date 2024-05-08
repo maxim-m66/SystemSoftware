@@ -15,4 +15,5 @@ add_executable(resenje
         src/table.cpp
         inc/table.hpp
         src/symbol_table.cpp
-        inc/symbol_table.hpp)
+        inc/symbol_table.hpp
+        src/emulator.cpp)
