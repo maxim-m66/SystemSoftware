@@ -49,13 +49,13 @@ reg "%"(("r"{digit}[0-5]?)|"pc"|"sp")
 "csrrd" { yylval.str = strdup(yytext); return CSRRD; }
 "csrwr" { yylval.str = strdup(yytext); return CSRWR; }
 {symbol} { yylval.str = strdup(yytext); return SYMBOL; }
-{symbol}":" { yylval.str = strdup(yytext); return LABEL; }
+":" { yylval.str = strdup(yytext); return LABEL; }
 {integer} { yylval.str = strdup(yytext); return INTEGER; }
 {reg} { yylval.str = strdup(yytext); return REGISTER; }
 "%"("status"|"handler"|"cause") { yylval.str = strdup(yytext); return SYSREG; }
-("$"{integer})|("$"{symbol}) { yylval.str = strdup(yytext); return IMMED; }
-"["{reg}"]" { yylval.str = strdup(yytext); return REGIND; }
-"["{reg}{spc}"+"{spc}({integer}|{symbol})"]" { yylval.str = strdup(yytext); return REGINDREL; }
+"$" { yylval.str = strdup(yytext); return IMMED; }
+"[" { yylval.str = strdup(yytext); return LBRACKET; }
+"]" { yylval.str = strdup(yytext); return RBRACKET; }
 [ \t]+ {/* Ignore whitespace */}
 [\n] { yylval.str = strdup(yytext); return NEWLINE; }
 "#"(.)* { yylval.str = strdup(yytext); return COMMENT; }

@@ -4,6 +4,7 @@
 #include "../inc/lexer.hpp"
 #include "../inc/parser.hpp"
 #include "../inc/section.hpp"
+#include "../inc/symbol_table.hpp"
 
 using namespace std;
 
@@ -42,7 +43,7 @@ int main(int argc, char **argv) {
         getline(input, line);
         yy_scan_string(line.c_str());
 		output << line;
-		int numSpaces = (40 - line.length());  // Estimate the number of tabs needed
+		int numSpaces = (30 - line.length());  // Estimate the number of tabs needed
 	    for (int i = 0; i < numSpaces - 1; i++) {
 	        output << ' ';
 	    }
@@ -50,4 +51,5 @@ int main(int argc, char **argv) {
 		output << endl;
     } while (!input.eof());
     output.close();
+    input.close();
 }

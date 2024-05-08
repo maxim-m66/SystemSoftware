@@ -10,9 +10,19 @@ class Section {
 public:
     uint32& next();
 
-    static Section& get_section(const std::string& name);
+    void symbolise(int index, uint32 value);
 
-    static uint32 make_word(uint8 *nibbles);
+    [[nodiscard]] int line() const { return line_count; }
+
+    [[nodiscard]] const std::string& get_name() const { return name; }
+
+    static std::vector<std::string>& get_extern() { return _extern; }
+
+    static std::vector<std::string>& get_global() { return _global; }
+
+    static Section* get_section(const std::string& name);
+
+    static uint32 make_word(uint8* nibbles);
 
     friend std::ostream& operator<<(std::ostream& os, const Section& section);
 
@@ -21,6 +31,8 @@ protected:
 
 private:
     static std::unordered_map<std::string, Section*> sections;
+    static std::vector<std::string> _extern;
+    static std::vector<std::string> _global;
     std::vector<uint32> words;
     std::string name;
     int line_count;

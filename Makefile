@@ -8,7 +8,7 @@ PARSER_HEADER = inc/parser.hpp
 # Input files
 LEXER_IN = misc/lexer.l
 PARSER_IN = misc/parser.y
-ASEMBLER_IN = src/asembler.cpp src/section.cpp src/codes.cpp src/table.cpp
+ASEMBLER_IN = src/asembler.cpp src/section.cpp src/codes.cpp src/table.cpp src/symbol_table.cpp
 
 # Tools
 LEX = flex
@@ -21,7 +21,7 @@ PARSE_FLAGS = -d -o $(PARSER_OUT)
 ASEMBLER_FLAGS = -o $(ASEMBLER_OUT)
 
 # Input variables
-MSG ?= "Update"
+MSG ?=Update
 
 all: lexer parser asembler run
 

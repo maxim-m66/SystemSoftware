@@ -7,11 +7,15 @@
 std::unordered_map<std::string, uint8> Codes::opcode = {
     {"halt", 0b0000},
     {"int", 0b0001},
+    {"iret", 0b1001},
     {"call", 0b0010},
+    {"ret", 0b1001},
     {"jmp", 0b0011},
     {"beq", 0b0011},
     {"bne", 0b0011},
     {"bgt", 0b0011},
+    {"push", 0b1000},
+    {"pop", 0b1001},
     {"xchg", 0b0100},
     {"add", 0b0101},
     {"sub", 0b0101},
@@ -30,7 +34,9 @@ std::unordered_map<std::string, uint8> Codes::opcode = {
 };
 
 std::unordered_map<std::string, uint8> Codes::mod{
+    {"iret", 0b0111},
     {"call", 0b0000},
+    {"ret", 0b0011},
     {"jmp", 0b0000},
     {"beq", 0b0001},
     {"bne", 0b0010},
@@ -54,7 +60,11 @@ std::unordered_map<std::string, uint8> Codes::mod{
     {"csrwr", 0b0100},
     {"pop", 0b0011},
     {"ret", 0b0011},
-    {"iret", 0b0011}
+    {"iret", 0b0011},
+    {"limmed", 0b0001},
+    {"lreg", 0b0001},
+    {"lmem", 0b0010},
+    {"st", 0b0000}
 };
 
 std::unordered_map<std::string, uint8> Codes::reg {
