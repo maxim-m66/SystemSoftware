@@ -1,9 +1,6 @@
 .section txt
-begin:
-halt
-begin1:
-int
-iret
+begin: halt
+begin1: int
 call 128
 call lol
 ret
@@ -15,12 +12,11 @@ bne %r1, %r2, 128
 bne %r1, %r2, enter
 bgt %r1, %r2, 128
 bgt %r1, %r2, lol
-enter:
-push %r15
+enter: push %r15
 pop %r15
 xchg %r1, %r2
 add %r1, %r2
-sub %r3, %r4
+lol: sub %r3, %r4
 mul %r5, %r6
 div %r7, %r8
 not %r9
@@ -45,11 +41,3 @@ ld %r5, %r6
 ld [%r7], %r8
 ld [%r9 + 128], %r10
 ld [%r11 + lol], %r12
-.section data
-lol: int
-.section bss
-int
-halt
-.section data
-lel:
-pop %r15

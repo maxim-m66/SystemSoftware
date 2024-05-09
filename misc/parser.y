@@ -17,6 +17,8 @@ SymbolTable &symbol_table = SymbolTable::get_table();
 
 std::vector<std::string> symbols;
 
+std::vector<std::string> mnemonics;
+
 uint8 instruction[8] = {};
 
 int to_int(const char *);
@@ -86,7 +88,6 @@ extern: EXTERN symbol_list terminate {
 
 section: SECTION SYMBOL terminate {
     section = Section::get_section($2);
-    output << "section";
 };
 
 word: WORD values_list terminate {
@@ -106,7 +107,6 @@ label: SYMBOL LABEL terminate {
     }
     symbol_table.value($1) = section->line()*4;
     symbol_table.section($1) = section->get_name();
-    output << "label   " << symbol_table.value($1);
 };
 
 ascii: ASCII STRING terminate {
@@ -119,214 +119,137 @@ equ: EQU SYMBOL COMMA expression terminate {
 
 inone: INONE terminate {
     fill(Codes::opcode[$1]);
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "inone  " << to_my_string(binary.to_string());
+    section->next() = Section::make_word(instruction);
 };
 
 ret: RET terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg["%pc"], Codes::reg["%sp"], 0, 1);
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "ret    " << to_my_string(binary.to_string());
+    section->next() = Section::make_word(instruction);
 };
 
 iret: IRET terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg["%status"], Codes::reg["%sp"], 0, 1);
-    int word1 = Section::make_word(instruction);
-    section->next() = word1;
-    std::bitset<32> binary1(word1);
+    section->next() = Section::make_word(instruction);
     fill(Codes::opcode["ret"], Codes::mod["ret"], Codes::reg["%pc"], Codes::reg["%sp"], 0, 1);
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "iret   " << to_my_string(binary1.to_string()) << to_my_string(binary.to_string());
+    section->next() = Section::make_word(instruction);
 };
 
 jump: JUMP SYMBOL terminate {
-    fill(Codes::opcode[$1], Codes::mod[$1]);
-    int word = Section::make_word(instruction);
-    section->next() = word;
     symbol_table.new_occurrence($2, section->get_name(), section->line());
-    std::bitset<32> binary(word);
-    output << "jump   " << to_my_string(binary.to_string());
-} | JUMP INTEGER terminate {
+    fill(Codes::opcode[$1], Codes::mod[$1]);
+    section->next() = Section::make_word(instruction);
+}
+    | JUMP INTEGER terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], 0, 0, 0, to_int($2));
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "jump   " << to_my_string(binary.to_string());
+    section->next() = Section::make_word(instruction);
 };
 
 branch: BRANCH REGISTER COMMA REGISTER COMMA SYMBOL terminate {
-    fill(Codes::opcode[$1], Codes::mod[$1], 0, Codes::reg[$2], Codes::reg[$4]);
-    int word = Section::make_word(instruction);
-    section->next() = word;
     symbol_table.new_occurrence($6, section->get_name(), section->line());
-    std::bitset<32> binary(word);
-    output << "branch " << to_my_string(binary.to_string());
-} | BRANCH REGISTER COMMA REGISTER COMMA INTEGER terminate {
+    fill(Codes::opcode[$1], Codes::mod[$1], 0, Codes::reg[$2], Codes::reg[$4]);
+    section->next() = Section::make_word(instruction);
+}
+    | BRANCH REGISTER COMMA REGISTER COMMA INTEGER terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], 0, Codes::reg[$2], Codes::reg[$4], to_int($6));
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "branch " << to_my_string(binary.to_string());
+    section->next() = Section::make_word(instruction);
 };
 
 push: PUSH REGISTER terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg["%sp"], 0, Codes::reg[$2], -1);
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "push   " << to_my_string(binary.to_string());
+    section->next() = Section::make_word(instruction);
 };
 
 pop: POP REGISTER terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$2], Codes::reg["%sp"], 0, 1);
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "pop    " << to_my_string(binary.to_string());
+    section->next() = Section::make_word(instruction);
 };
 
 alo: ALO REGISTER COMMA REGISTER terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$4], Codes::reg[$2], Codes::reg[$4]);
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "alo    " << to_my_string(binary.to_string());
+    section->next() = Section::make_word(instruction);
 };
 
 xchg: XCHG REGISTER COMMA REGISTER {
     fill(Codes::opcode[$1], 0, 0, Codes::reg[$2], Codes::reg[$4]);
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "alo    " << to_my_string(binary.to_string());
+    section->next() = Section::make_word(instruction);
 };
 
 not: NOT REGISTER {
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$2], Codes::reg[$2]);
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "not    " << to_my_string(binary.to_string());
+    section->next() = Section::make_word(instruction);
 };
 
 ld: LD IMMED INTEGER COMMA REGISTER terminate {
     fill(Codes::opcode[$1], Codes::mod["limmed"], Codes::reg[$5], 0, 0, to_int($3));
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "ld     " << to_my_string(binary.to_string());
+    section->next() = Section::make_word(instruction);
 }
     | LD IMMED SYMBOL COMMA REGISTER terminate {
-    fill(Codes::opcode[$1], Codes::mod["limmed"], Codes::reg[$5]);
-    int word = Section::make_word(instruction);
-    section->next() = word;
     symbol_table.new_occurrence($3, section->get_name(), section->line());
-    std::bitset<32> binary(word);
-    output << "ld     " << to_my_string(binary.to_string());
+    fill(Codes::opcode[$1], Codes::mod["limmed"], Codes::reg[$5]);
+    section->next() = Section::make_word(instruction);
 }
     | LD INTEGER COMMA REGISTER terminate {
     fill(Codes::opcode[$1], Codes::mod["lmem"], Codes::reg[$4], 0, 0, to_int($2));
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "ld     " << to_my_string(binary.to_string());
+    section->next() = Section::make_word(instruction);
 }
     | LD SYMBOL COMMA REGISTER terminate {
-    fill(Codes::opcode[$1], Codes::mod["lmem"], Codes::reg[$4]);
-    int word = Section::make_word(instruction);
-    section->next() = word;
     symbol_table.new_occurrence($2, section->get_name(), section->line());
-    std::bitset<32> binary(word);
-    output << "ld     " << to_my_string(binary.to_string());
+    fill(Codes::opcode[$1], Codes::mod["lmem"], Codes::reg[$4]);
+    section->next() = Section::make_word(instruction);
 }
     | LD REGISTER COMMA REGISTER terminate {
     fill(Codes::opcode[$1], Codes::mod["lreg"], Codes::reg[$4], Codes::reg[$2]);
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "ld     " << to_my_string(binary.to_string());
-}   | LD LBRACKET REGISTER RBRACKET COMMA REGISTER terminate {
+    section->next() = Section::make_word(instruction);
+}
+    | LD LBRACKET REGISTER RBRACKET COMMA REGISTER terminate {
     fill(Codes::opcode[$1], Codes::mod["lmem"], Codes::reg[$6], Codes::reg[$3]);
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "ld     " << to_my_string(binary.to_string());
-}   | LD LBRACKET REGISTER OPERATOR INTEGER RBRACKET COMMA REGISTER terminate {
+    section->next() = Section::make_word(instruction);
+}
+    | LD LBRACKET REGISTER OPERATOR INTEGER RBRACKET COMMA REGISTER terminate {
     fill(Codes::opcode[$1], Codes::mod["lmem"], Codes::reg[$8], Codes::reg[$3], 0, to_int($5));
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "ld     " << to_my_string(binary.to_string());
-}   | LD LBRACKET REGISTER OPERATOR SYMBOL RBRACKET COMMA REGISTER terminate {
-    fill(Codes::opcode[$1], Codes::mod["lmem"], Codes::reg[$8], Codes::reg[$3]);
-    int word = Section::make_word(instruction);
-    section->next() = word;
+    section->next() = Section::make_word(instruction);
+}
+    | LD LBRACKET REGISTER OPERATOR SYMBOL RBRACKET COMMA REGISTER terminate {
     symbol_table.new_occurrence($5, section->get_name(), section->line());
-    std::bitset<32> binary(word);
-    output << "ld     " << to_my_string(binary.to_string());
+    fill(Codes::opcode[$1], Codes::mod["lmem"], Codes::reg[$8], Codes::reg[$3]);
+    section->next() = Section::make_word(instruction);
 };
 
 st: ST REGISTER COMMA INTEGER terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], 0, 0, Codes::reg[$2], to_int($4));
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "st     " << to_my_string(binary.to_string());
-}   | ST REGISTER COMMA SYMBOL terminate {
-    fill(Codes::opcode[$1], Codes::mod[$1], 0, 0, Codes::reg[$2]);
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    symbol_table.new_occurrence($4, section->get_name(), section->line());
-    std::bitset<32> binary(word);
-    output << "st     " << to_my_string(binary.to_string());
-}   | ST REGISTER COMMA REGISTER terminate {
-    fill(Codes::opcode["ld"], Codes::mod["lreg"], Codes::reg[$4], Codes::reg[$2]);
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "ld     " << to_my_string(binary.to_string());
-}   | ST REGISTER COMMA LBRACKET REGISTER RBRACKET terminate {
-    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$5], 0, Codes::reg[$2]);
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "ld     " << to_my_string(binary.to_string());
-}   | ST REGISTER COMMA LBRACKET REGISTER OPERATOR INTEGER RBRACKET terminate {
-    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$5], 0, Codes::reg[$2], to_int($7));
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "ld     " << to_my_string(binary.to_string());
-}   | ST REGISTER COMMA LBRACKET REGISTER OPERATOR SYMBOL RBRACKET terminate {
-    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$5], 0, Codes::reg[$2]);
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    symbol_table.new_occurrence($7, section->get_name(), section->line());
-    std::bitset<32> binary(word);
-    output << "ld     " << to_my_string(binary.to_string());
+    section->next() = Section::make_word(instruction);
 }
-;
+    | ST REGISTER COMMA SYMBOL terminate {
+    symbol_table.new_occurrence($4, section->get_name(), section->line());
+    fill(Codes::opcode[$1], Codes::mod[$1], 0, 0, Codes::reg[$2]);
+    section->next() = Section::make_word(instruction);
+}
+    | ST REGISTER COMMA REGISTER terminate {
+    fill(Codes::opcode["ld"], Codes::mod["lreg"], Codes::reg[$4], Codes::reg[$2]);
+    section->next() = Section::make_word(instruction);
+}
+    | ST REGISTER COMMA LBRACKET REGISTER RBRACKET terminate {
+    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$5], 0, Codes::reg[$2]);
+    section->next() = Section::make_word(instruction);
+}
+    | ST REGISTER COMMA LBRACKET REGISTER OPERATOR INTEGER RBRACKET terminate {
+    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$5], 0, Codes::reg[$2], to_int($7));
+    section->next() = Section::make_word(instruction);
+}
+    | ST REGISTER COMMA LBRACKET REGISTER OPERATOR SYMBOL RBRACKET terminate {
+    symbol_table.new_occurrence($7, section->get_name(), section->line());
+    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$5], 0, Codes::reg[$2]);
+    section->next() = Section::make_word(instruction);
+};
 
 csrrd: CSRRD SYSREG COMMA REGISTER terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$2], Codes::reg[$4]);
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "csrrd  " << to_my_string(binary.to_string());
+    section->next() = Section::make_word(instruction);
 };
 
 csrwr: CSRWR REGISTER COMMA SYSREG terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$2], Codes::reg[$4]);
-    int word = Section::make_word(instruction);
-    section->next() = word;
-    std::bitset<32> binary(word);
-    output << "csrwr  " << to_my_string(binary.to_string());
+    section->next() = Section::make_word(instruction);
 };
 
 %%

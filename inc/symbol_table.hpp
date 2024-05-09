@@ -34,6 +34,8 @@ public:
 
     static SymbolTable& get_table();
 
+    static void symbolise();
+
 protected:
     explicit SymbolTable() {}
 

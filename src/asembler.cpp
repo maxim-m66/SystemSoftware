@@ -10,6 +10,8 @@ using namespace std;
 
 ofstream output;
 
+extern vector<string> mnemonics;
+
 int main(int argc, char **argv) {
     string input_filename, output_filename;
 
@@ -36,20 +38,15 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-    output.open(output_filename);
-
     for (int lineN = 0; !input.eof(); lineN++) {
         string line;
         getline(input, line);
         yy_scan_string(line.c_str());
-		output << line;
-		int numSpaces = (30 - line.length());  // Estimate the number of tabs needed
-	    for (int i = 0; i < numSpaces - 1; i++) {
-	        output << ' ';
-	    }
         yyparse();
-		output << endl;
     } while (!input.eof());
-    output.close();
     input.close();
+    output.open(output_filename);
+    SymbolTable::symbolise();
+    Section::flush(output);
+    output.close();
 }

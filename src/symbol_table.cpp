@@ -1,6 +1,9 @@
 #include "../inc/symbol_table.hpp"
 
+#include <iostream>
 #include <ostream>
+
+#include "../inc/section.hpp"
 
 SymbolTable* SymbolTable::table = nullptr;
 
@@ -21,10 +24,19 @@ SymbolTable& SymbolTable::get_table() {
     return *SymbolTable::table;
 }
 
+void SymbolTable::symbolise() {
+    for (auto& pair : table->symbols) {
+        for (auto& sectionline : pair.second->occurences) {
+            if (pair.second->section != sectionline.section) continue;
+            Section::get_section(sectionline.section)->symbolise(sectionline.line, pair.second->value);
+        }
+    }
+}
+
 std::ostream& operator<<(std::ostream& out, const SymbolTable& table) {
-    for (auto& pair: table.symbols) {
-        out << pair.first << "(" << pair.second->section << ", " << pair.second->value << "):"<< std::endl;
-        for (auto& sectionline: pair.second->occurences) {
+    for (auto& pair : table.symbols) {
+        out << pair.first << "(" << pair.second->section << ", " << pair.second->value << "):" << std::endl;
+        for (auto& sectionline : pair.second->occurences) {
             out << sectionline.section << " " << sectionline.line << std::endl;
         }
     }

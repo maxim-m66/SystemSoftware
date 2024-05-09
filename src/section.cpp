@@ -2,6 +2,11 @@
 
 #include <ostream>
 #include <bitset>
+#include <iostream>
+
+extern std::vector<std::string> mnemonics;
+
+std::string to_my_string(std::string);
 
 Section::Section(const std::string& name): name(name), line_count(0) {}
 
@@ -17,8 +22,8 @@ uint32& Section::next() {
     return this->words.back();
 }
 
-void Section::symbolise(int index, uint32 value) {
-    if (value > 2 ^ 12) {
+void Section::symbolise(int index, int value) {
+    if (value > 1 << 12) {
         throw std::runtime_error("Symbol value too large");
     }
     value = value & 0xFFF;
@@ -42,11 +47,19 @@ uint32 Section::make_word(uint8* nibbles) {
     return word;
 }
 
-std::ostream& operator<<(std::ostream& os, const Section& section) {
-    os << section.name << std::endl;
+void Section::flush(std::ostream& out) {
+    for(auto& pair: Section::sections) {
+        out << *pair.second;
+    }
+}
+
+std::ostream& operator<<(std::ostream& out, const Section& section) {
+    out << section.name << std::endl;
+    int i = 0;
     for (const uint32 word : section.words) {
         std::bitset<32> binary(word);
-        os << binary.to_string() << std::endl;
+        out << to_my_string(binary.to_string()) << std::endl;
+        i++;
     }
-    return os;
+    return out;
 }

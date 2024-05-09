@@ -10,7 +10,7 @@ class Section {
 public:
     uint32& next();
 
-    void symbolise(int index, uint32 value);
+    void symbolise(int index, int value);
 
     [[nodiscard]] int line() const { return line_count; }
 
@@ -24,7 +24,11 @@ public:
 
     static uint32 make_word(uint8* nibbles);
 
-    friend std::ostream& operator<<(std::ostream& os, const Section& section);
+    //static std::unordered_map<std::string, Section*>& get_sections() { return sections; }
+
+    static void flush(std::ostream &out);
+
+    friend std::ostream& operator<<(std::ostream& out, const Section& section);
 
 protected:
     explicit Section(const std::string& name);
