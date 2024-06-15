@@ -8,9 +8,9 @@ extern std::vector<std::string> mnemonics;
 
 std::string to_my_string(std::string);
 
-Section::Section(const std::string& name): name(name), line_count(0) {}
+Section::Section(const std::string& name, int name_offset): name(name), line_count(0), name_offset(name_offset) {}
 
-std::unordered_map<std::string, Section*> Section::sections;
+std::unordered_map<std::string, Section*> Section::sections({{".strtab", new StringSection(0)}});
 
 std::vector<std::string> Section::_extern;
 
@@ -32,9 +32,18 @@ void Section::symbolise(int index, int value) {
 
 Section* Section::get_section(const std::string& name) {
     if (Section::sections.find(name) == Section::sections.end()) {
-        Section::sections[name] = new Section(name);
+        Section::sections[name] = new Section(name, get_strings()->line());
+        get_strings()->add(name);
     }
     return Section::sections[name];
+}
+
+std::vector<Section*>& Section::get_sections() {
+    std::vector<Section*>* result = new std::vector<Section*>();
+    for (auto& pair : Section::sections) {
+        result->push_back(pair.second);
+    }
+    return *result;
 }
 
 uint32 Section::make_word(uint8* nibbles) {
@@ -48,18 +57,32 @@ uint32 Section::make_word(uint8* nibbles) {
 }
 
 void Section::flush(std::ostream& out) {
-    for(auto& pair: Section::sections) {
+    for (auto& pair : Section::sections) {
         out << *pair.second;
     }
 }
 
 std::ostream& operator<<(std::ostream& out, const Section& section) {
-    out << section.name << std::endl;
-    int i = 0;
     for (const uint32 word : section.words) {
         std::bitset<32> binary(word);
-        out << to_my_string(binary.to_string()) << std::endl;
-        i++;
+        out << binary.to_string() << std::endl;
     }
     return out;
+}
+
+std::ostream& operator<<(std::ostream& out, const StringSection& section) {
+    for (const uint32 word : section.words) {
+        out << static_cast<char>(word & 0xFF);
+    }
+    return out;
+}
+
+void StringSection::add(const std::string& string) {
+    for (const char c : string) {
+        this->next() = c;
+    }
+}
+
+StringSection::StringSection(int name_offset) : Section(".strtab", name_offset) {
+    this->add(".strtab");
 }

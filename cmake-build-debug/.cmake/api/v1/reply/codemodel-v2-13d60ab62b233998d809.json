@@ -15,8 +15,7 @@
 					"source" : ".",
 					"targetIndexes" : 
 					[
-						0,
-						1
+						0
 					]
 				}
 			],
@@ -31,8 +30,7 @@
 					"name" : "resenje",
 					"targetIndexes" : 
 					[
-						0,
-						1
+						0
 					]
 				}
 			],
@@ -41,15 +39,8 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "resenje::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-resenje-Debug-6fabc84c10f5a4f1a132.json",
+					"jsonFile" : "target-resenje-Debug-0ef60f235d4fa780721d.json",
 					"name" : "resenje",
-					"projectIndex" : 0
-				},
-				{
-					"directoryIndex" : 0,
-					"id" : "resenje1::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-resenje1-Debug-bb46e94c8b067a2604cc.json",
-					"name" : "resenje1",
 					"projectIndex" : 0
 				}
 			]

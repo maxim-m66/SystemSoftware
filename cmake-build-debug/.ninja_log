@@ -1,0 +1,8 @@
+# ninja log v5
+10	242	1718464774426191853	CMakeFiles/resenje.dir/src/lexer.cpp.o	e9c8fde292d1af75
+17	1335	1718464775530266713	CMakeFiles/resenje.dir/src/asembler.cpp.o	cd051e04132580ed
+243	1869	1718464776066303063	CMakeFiles/resenje.dir/src/section.cpp.o	faa277fe1291a160
+1870	1904	1718464776102305505	CMakeFiles/resenje.dir/src/table.cpp.o	697b0896c20e36ac
+11	2083	1718464776278317442	CMakeFiles/resenje.dir/src/parser.cpp.o	6aa94c0cda02bdc6
+1336	2463	1718464776658343216	CMakeFiles/resenje.dir/src/codes.cpp.o	6a28c32d0369f80c
+1904	3011	1718464777206380387	CMakeFiles/resenje.dir/src/symbol_table.cpp.o	2a5a34cc60297086

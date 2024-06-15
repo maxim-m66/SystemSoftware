@@ -97,6 +97,12 @@ build CMakeFiles/resenje.dir/src/emulator.cpp.o: CXX_COMPILER__resenje_unscanned
   OBJECT_DIR = CMakeFiles/resenje.dir
   OBJECT_FILE_DIR = CMakeFiles/resenje.dir/src
 
+build CMakeFiles/resenje.dir/src/elf.cpp.o: CXX_COMPILER__resenje_unscanned_Debug /home/ss/resenje/src/elf.cpp || cmake_object_order_depends_target_resenje
+  DEP_FILE = CMakeFiles/resenje.dir/src/elf.cpp.o.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles/resenje.dir
+  OBJECT_FILE_DIR = CMakeFiles/resenje.dir/src
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target resenje
@@ -105,44 +111,13 @@ build CMakeFiles/resenje.dir/src/emulator.cpp.o: CXX_COMPILER__resenje_unscanned
 #############################################
 # Link the executable resenje
 
-build resenje: CXX_EXECUTABLE_LINKER__resenje_Debug CMakeFiles/resenje.dir/src/lexer.cpp.o CMakeFiles/resenje.dir/src/parser.cpp.o CMakeFiles/resenje.dir/src/asembler.cpp.o CMakeFiles/resenje.dir/src/section.cpp.o CMakeFiles/resenje.dir/src/codes.cpp.o CMakeFiles/resenje.dir/src/table.cpp.o CMakeFiles/resenje.dir/src/symbol_table.cpp.o CMakeFiles/resenje.dir/src/emulator.cpp.o
+build resenje: CXX_EXECUTABLE_LINKER__resenje_Debug CMakeFiles/resenje.dir/src/lexer.cpp.o CMakeFiles/resenje.dir/src/parser.cpp.o CMakeFiles/resenje.dir/src/asembler.cpp.o CMakeFiles/resenje.dir/src/section.cpp.o CMakeFiles/resenje.dir/src/codes.cpp.o CMakeFiles/resenje.dir/src/table.cpp.o CMakeFiles/resenje.dir/src/symbol_table.cpp.o CMakeFiles/resenje.dir/src/emulator.cpp.o CMakeFiles/resenje.dir/src/elf.cpp.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/resenje.dir
   POST_BUILD = :
   PRE_LINK = :
   TARGET_FILE = resenje
   TARGET_PDB = resenje.dbg
-
-# =============================================================================
-# Object build statements for EXECUTABLE target resenje1
-
-
-#############################################
-# Order-only phony target for resenje1
-
-build cmake_object_order_depends_target_resenje1: phony || CMakeFiles/resenje1.dir
-
-build CMakeFiles/resenje1.dir/src/emulator.cpp.o: CXX_COMPILER__resenje1_unscanned_Debug /home/ss/resenje/src/emulator.cpp || cmake_object_order_depends_target_resenje1
-  DEP_FILE = CMakeFiles/resenje1.dir/src/emulator.cpp.o.d
-  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
-  OBJECT_DIR = CMakeFiles/resenje1.dir
-  OBJECT_FILE_DIR = CMakeFiles/resenje1.dir/src
-
-
-# =============================================================================
-# Link build statements for EXECUTABLE target resenje1
-
-
-#############################################
-# Link the executable resenje1
-
-build resenje1: CXX_EXECUTABLE_LINKER__resenje1_Debug CMakeFiles/resenje1.dir/src/emulator.cpp.o
-  FLAGS = -g
-  OBJECT_DIR = CMakeFiles/resenje1.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  TARGET_FILE = resenje1
-  TARGET_PDB = resenje1.dbg
 
 
 #############################################
@@ -178,7 +153,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 #############################################
 # Folder: /home/ss/resenje/cmake-build-debug
 
-build all: phony resenje resenje1
+build all: phony resenje
 
 # =============================================================================
 # Built-in targets

@@ -18,14 +18,15 @@ void SymbolTable::new_occurrence(const std::string& symbol, const std::string& s
 }
 
 SymbolTable& SymbolTable::get_table() {
-    if (SymbolTable::table == nullptr) {
-        SymbolTable::table = new SymbolTable();
+    if (table == nullptr) {
+        table = new SymbolTable();
     }
-    return *SymbolTable::table;
+    return *table;
 }
 
 void SymbolTable::symbolise() {
     for (auto& pair : table->symbols) {
+
         for (auto& sectionline : pair.second->occurences) {
             if (pair.second->section != sectionline.section) continue;
             Section::get_section(sectionline.section)->symbolise(sectionline.line, pair.second->value);

@@ -9,7 +9,7 @@ EMULATOR_OUT = emulator
 # Input files
 LEXER_IN = misc/lexer.l
 PARSER_IN = misc/parser.y
-ASEMBLER_IN = src/asembler.cpp src/section.cpp src/codes.cpp src/table.cpp src/symbol_table.cpp
+ASEMBLER_IN = src/asembler.cpp src/section.cpp src/codes.cpp src/table.cpp src/symbol_table.cpp src/elf.cpp
 EMULATOR_IN = src/emulator.cpp
 
 # Tools

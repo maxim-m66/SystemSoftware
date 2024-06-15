@@ -9,19 +9,22 @@
 #include "../inc/codes.hpp"
 #include <bitset>
 
-extern std::ofstream output;
-
-Section *section = Section::get_section("");
+Section *section = Section::get_section("txt");
 
 SymbolTable &symbol_table = SymbolTable::get_table();
 
-std::vector<std::string> symbols;
+struct pair {
+    bool is_symbol;
+    std::string symbol;
+};
 
-std::vector<std::string> mnemonics;
+std::vector<pair> symbols;
 
 uint8 instruction[8] = {};
 
 int to_int(const char *);
+
+int to_int(std::string s);
 
 void fill(uint8 opcode, uint8 mod = 0, uint8 a = 0, uint8 b = 0, uint8 c = 0, int displacement = 0);
 
@@ -52,38 +55,51 @@ instruction: inone | ret | iret | jump | branch | push | pop | alo | xchg | not 
 directive: global | extern | section | word | skip | ascii | equ | end;
 
 symbol_list: SYMBOL {
-    symbols.push_back($1);
+    symbols.push_back({true, $1});
 }
 | symbol_list COMMA SYMBOL {
-    symbols.push_back($3);
+    symbols.push_back({true, $3});
 };
 
-value: SYMBOL | INTEGER;
+values_list: INTEGER {
+    symbols.push_back({true, $1});
+}
+| SYMBOL {
+    symbols.push_back({false, $1});
+}
+| values_list COMMA INTEGER {
+    symbols.push_back({true, $3});
+}
+| values_list COMMA SYMBOL {
+    symbols.push_back({false, $3});
+};
 
-values_list: value | values_list COMMA value;
-
-expression: value | value OPERATOR expression;
+expression: INTEGER {
+}
+    | SYMBOL {
+}
+    | INTEGER OPERATOR expression {
+}
+    | SYMBOL OPERATOR expression {
+};
 
 terminate: COMMENT |;
 
 end: END terminate {
-    output << "end";
 };
 
 global: GLOBAL symbol_list terminate {
-    for (std::string symbol : symbols) {
-        Section::get_global().push_back(symbol);
+    for (auto& pair : symbols) {
+        Section::get_global().push_back(pair.symbol);
     }
     symbols.clear();
-    output << "global";
 };
 
 extern: EXTERN symbol_list terminate {
-    for (std::string symbol : symbols) {
-        Section::get_extern().push_back(symbol);
+    for (auto& pair : symbols) {
+        Section::get_extern().push_back(pair.symbol);
     }
     symbols.clear();
-    output << "extern";
 };
 
 section: SECTION SYMBOL terminate {
@@ -91,12 +107,22 @@ section: SECTION SYMBOL terminate {
 };
 
 word: WORD values_list terminate {
-    output << "word";
+    for (pair value : symbols) {
+        if (value.is_symbol) {
+            symbol_table.new_occurrence(value.symbol, section->get_name(), section->line());
+            section->next() = 0;
+        } else {
+            section->next() = to_int(value.symbol);
+        }
+    }
+    symbols.clear();
 };
 
-skip: SKIP value terminate {
-    output << "skip";
-};
+skip: SKIP INTEGER terminate {
+    for (int i = 0; i < to_int($2); i++) {
+        section->next() = 0;
+    }
+}
 
 label: SYMBOL LABEL terminate {
     if (!symbol_table.has_symbol($1)) {
@@ -110,11 +136,9 @@ label: SYMBOL LABEL terminate {
 };
 
 ascii: ASCII STRING terminate {
-    output << "ascii" << $1;
 };
 
 equ: EQU SYMBOL COMMA expression terminate {
-    output << "equ " << $1 << " " << $2 << " " << $3;
 };
 
 inone: INONE terminate {
@@ -255,7 +279,6 @@ csrwr: CSRWR REGISTER COMMA SYSREG terminate {
 %%
 
 void yyerror(const char *s) {
-    output << s;
     fprintf(stderr, "error: %s", s);
 }
 
@@ -265,6 +288,10 @@ static std::unordered_map<char, int> digits = {
     {'A', 10}, {'B', 11}, {'C', 12}, {'D', 13}, {'E', 14}, {'F', 15},
     {'a', 10}, {'b', 11}, {'c', 12}, {'d', 13}, {'e', 14}, {'f', 15}
 };
+
+int to_int(std::string s) {
+    return to_int(s.c_str());
+}
 
 int to_int(const char *string) {
     int base = 10;
