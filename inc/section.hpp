@@ -3,9 +3,7 @@
 
 #include <unordered_map>
 #include <vector>
-
-typedef unsigned int uint32;
-typedef unsigned char uint8;
+#include "int_util.hpp"
 
 class StringSection;
 

@@ -8,12 +8,14 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/os/CLionProjects/SystemSoftware/src/FinishedSection.cpp" "CMakeFiles/resenje.dir/src/FinishedSection.cpp.o" "gcc" "CMakeFiles/resenje.dir/src/FinishedSection.cpp.o.d"
   "/home/os/CLionProjects/SystemSoftware/src/LSection.cpp" "CMakeFiles/resenje.dir/src/LSection.cpp.o" "gcc" "CMakeFiles/resenje.dir/src/LSection.cpp.o.d"
   "/home/os/CLionProjects/SystemSoftware/src/LSymTable.cpp" "CMakeFiles/resenje.dir/src/LSymTable.cpp.o" "gcc" "CMakeFiles/resenje.dir/src/LSymTable.cpp.o.d"
   "/home/os/CLionProjects/SystemSoftware/src/asembler.cpp" "CMakeFiles/resenje.dir/src/asembler.cpp.o" "gcc" "CMakeFiles/resenje.dir/src/asembler.cpp.o.d"
   "/home/os/CLionProjects/SystemSoftware/src/codes.cpp" "CMakeFiles/resenje.dir/src/codes.cpp.o" "gcc" "CMakeFiles/resenje.dir/src/codes.cpp.o.d"
   "/home/os/CLionProjects/SystemSoftware/src/elf.cpp" "CMakeFiles/resenje.dir/src/elf.cpp.o" "gcc" "CMakeFiles/resenje.dir/src/elf.cpp.o.d"
   "/home/os/CLionProjects/SystemSoftware/src/emulator.cpp" "CMakeFiles/resenje.dir/src/emulator.cpp.o" "gcc" "CMakeFiles/resenje.dir/src/emulator.cpp.o.d"
+  "/home/os/CLionProjects/SystemSoftware/src/int_util.cpp" "CMakeFiles/resenje.dir/src/int_util.cpp.o" "gcc" "CMakeFiles/resenje.dir/src/int_util.cpp.o.d"
   "/home/os/CLionProjects/SystemSoftware/src/lexer.cpp" "CMakeFiles/resenje.dir/src/lexer.cpp.o" "gcc" "CMakeFiles/resenje.dir/src/lexer.cpp.o.d"
   "/home/os/CLionProjects/SystemSoftware/src/linker.cpp" "CMakeFiles/resenje.dir/src/linker.cpp.o" "gcc" "CMakeFiles/resenje.dir/src/linker.cpp.o.d"
   "/home/os/CLionProjects/SystemSoftware/src/parser.cpp" "CMakeFiles/resenje.dir/src/parser.cpp.o" "gcc" "CMakeFiles/resenje.dir/src/parser.cpp.o.d"

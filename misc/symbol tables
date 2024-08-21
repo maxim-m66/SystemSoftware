@@ -1,0 +1,8 @@
+symbols n (how many symbols were defined)
+n*{
+    S m u (S - symbol itself, m - binding {0 - extern, 1 - local, 2 - global}, u - how many times is the symbol used)
+    <section b> (section - where the symbol is defined, b - which byte), exists only for non-extern symbols
+    u*{
+        section b w (section - where the symbol is used, b - which byte, w - whether its whole 32b or just the D in instruction)
+    }
+}

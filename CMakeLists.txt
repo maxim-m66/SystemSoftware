@@ -24,5 +24,8 @@ add_executable(resenje
         src/LSymTable.cpp
         inc/LSymTable.hpp
         inc/binding.hpp
-        src/LSection.cpp
-        inc/LSection.hpp)
+        src/LinkerSection.cpp
+        inc/LinkerSection.hpp
+        src/int_util.cpp
+        inc/int_util.hpp
+)

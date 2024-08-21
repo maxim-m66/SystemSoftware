@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/resenje.dir/src/FinishedSection.cpp.o"
+  "CMakeFiles/resenje.dir/src/FinishedSection.cpp.o.d"
   "CMakeFiles/resenje.dir/src/LSection.cpp.o"
   "CMakeFiles/resenje.dir/src/LSection.cpp.o.d"
   "CMakeFiles/resenje.dir/src/LSymTable.cpp.o"
@@ -11,6 +13,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/resenje.dir/src/elf.cpp.o.d"
   "CMakeFiles/resenje.dir/src/emulator.cpp.o"
   "CMakeFiles/resenje.dir/src/emulator.cpp.o.d"
+  "CMakeFiles/resenje.dir/src/int_util.cpp.o"
+  "CMakeFiles/resenje.dir/src/int_util.cpp.o.d"
   "CMakeFiles/resenje.dir/src/lexer.cpp.o"
   "CMakeFiles/resenje.dir/src/lexer.cpp.o.d"
   "CMakeFiles/resenje.dir/src/linker.cpp.o"

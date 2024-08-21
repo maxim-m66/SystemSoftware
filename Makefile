@@ -10,8 +10,8 @@ EMULATOR_OUT = emulator
 # Input files
 LEXER_IN = misc/lexer.l
 PARSER_IN = misc/parser.y
-ASEMBLER_IN = src/asembler.cpp src/section.cpp src/codes.cpp src/table.cpp src/symbol_table.cpp src/elf.cpp
-LINKER_IN = src/linker.cpp src/LSymTable.cpp src/LSection.cpp
+ASEMBLER_IN = src/asembler.cpp src/section.cpp src/codes.cpp src/symbol_table.cpp src/elf.cpp src/int_util.cpp
+LINKER_IN = src/linker.cpp src/LSymTable.cpp src/LinkerSection.cpp src/int_util.cpp
 EMULATOR_IN = src/emulator.cpp
 
 # Tools
@@ -54,8 +54,8 @@ runemu:
 linker: cleanlinker
 	$(COMPILE) $(LINKER_FLAGS) $(LINKER_IN)
 
-runlinker:
-	./$(LINKER_OUT)
+runlinker: linker
+	./$(LINKER_OUT) -o out test1.o test2.o -hex
 
 clean:
 	rm -f $(LEXER_OUT) $(LEXER_HEADER) $(PARSER_OUT) $(PARSER_HEADER) $(ASEMBLER_OUT) $(LINKER_OUT) tests/*.o

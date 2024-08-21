@@ -2,25 +2,32 @@
 #include <fstream>
 #include "../inc/LSymTable.hpp"
 #include "../inc/binding.hpp"
-#include "../inc/LSection.hpp"
+#include "../inc/LinkerSection.hpp"
+#include "../inc/int_util.hpp"
+
+#define EQ 6
 
 using namespace std;
 
-int read_file(const std::string &filename) {
+std::string read_file(const std::string &filename) {
 
     std::ifstream file("tests/" + filename);
-    if (!file.is_open()) return -1;
+    if (!file.is_open()) return "Unable to open file " + filename;
+
+    LinkerSection::add_file(filename);
 
     std::string header, name, section;
     int elements, binding, lines, line, byte, whole;
 
     file >> header >> elements;
-    if (header != "symbols" or elements < 0) return -2;
+    if (header != "symbols" or elements < 0) return "No symbol table in file " + filename;
     for (int i = 0; i < elements; i++) {
         file >> name >> binding >> lines;
         if (binding != EXTERN_SYMBOL) {
             file >> section >> byte;
-            LSymTable::new_definition(filename, section, name, byte, binding == LOCAL_SYMBOL);
+            if (!LSymTable::new_definition(filename, section, name, byte, binding == LOCAL_SYMBOL)) {
+                return "Multiple definitions of a symbol: " + name;
+            }
         }
         for (int j = 0; j < lines; j++) {
             file >> section >> line >> whole;
@@ -29,20 +36,72 @@ int read_file(const std::string &filename) {
     }
 
     file >> header >> elements;
-    if (header != "sections") return -4;
+    if (header != "sections") return "No sections in file " + filename;
     for (int i = 0; i < elements; i++) {
         file >> name >> lines;
-        LSection::add_section(filename, file, name, lines);
+        OldSection::add_section(filename, file, name, lines);
     }
-    return 0;
+    return "";
 }
 
 int main(int argc, char **argv) {
-    int error = read_file("test1.o");
-    if (error) {
-        cout << "ERROR " << error;
-    } else {
-        LSymTable::print();
-        LSection::print();
+    bool executable = false, relocatable = false;
+    string input, output = "out.hex";
+    vector<string> files;
+    unordered_map<string, int> starts;
+    for (int i = 1; i < argc; i++) {
+        input = argv[i];
+        if (input == "-o") {
+            output = argv[++i];
+            continue;
+        } else if (input[EQ] == '=') {
+            int at = input.find('@');
+            int position = to_int(input.substr(at + 1));
+            LinkerSection::add_start_position(input.substr(EQ + 1, at - EQ - 1), position);
+        } else if (input == "-hex") {
+            executable = true;
+        } else if (input == "-relocatable") {
+            relocatable = true;
+        } else {
+            files.push_back(input);
+        }
     }
-}
+
+    if (relocatable == executable) {
+        cerr << "output type not defined";
+        exit(0);
+    }
+
+    for (auto &file: files) {
+        std::string error = read_file(file);
+        if (error != "") {
+            cerr << error << "\n";
+            exit(0);
+        }
+    }
+
+    vector<string> &undefined = LSymTable::check_undefined();
+    if (!undefined.empty()) {
+        cerr << "undefined reference to:\n";
+        for (auto &symbol: undefined) {
+            cerr << symbol << ";\n";
+        }
+        exit(0);
+    }
+
+    LinkerSection::link();
+
+    if (executable) {
+        LSymTable::resolve_symbols();
+        LSymTable::relocate();
+        LinkerSection::out_hex();
+    }
+//        LSymTable::relocate();
+//        LinkerSection::out_hex();
+//    } else if (relocatable) {
+//        LinkerSection::out_obj();
+//    }
+//    FinishedSection::print();
+//    LSymTable::print();
+//    OldSection::print();
+    }

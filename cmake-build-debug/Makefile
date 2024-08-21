@@ -129,6 +129,30 @@ resenje/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/build
 .PHONY : resenje/fast
 
+src/FinishedSection.o: src/FinishedSection.cpp.o
+.PHONY : src/FinishedSection.o
+
+# target to build an object file
+src/FinishedSection.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/FinishedSection.cpp.o
+.PHONY : src/FinishedSection.cpp.o
+
+src/FinishedSection.i: src/FinishedSection.cpp.i
+.PHONY : src/FinishedSection.i
+
+# target to preprocess a source file
+src/FinishedSection.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/FinishedSection.cpp.i
+.PHONY : src/FinishedSection.cpp.i
+
+src/FinishedSection.s: src/FinishedSection.cpp.s
+.PHONY : src/FinishedSection.s
+
+# target to generate assembly for a file
+src/FinishedSection.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/FinishedSection.cpp.s
+.PHONY : src/FinishedSection.cpp.s
+
 src/LSection.o: src/LSection.cpp.o
 .PHONY : src/LSection.o
 
@@ -272,6 +296,30 @@ src/emulator.s: src/emulator.cpp.s
 src/emulator.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/emulator.cpp.s
 .PHONY : src/emulator.cpp.s
+
+src/int_util.o: src/int_util.cpp.o
+.PHONY : src/int_util.o
+
+# target to build an object file
+src/int_util.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/int_util.cpp.o
+.PHONY : src/int_util.cpp.o
+
+src/int_util.i: src/int_util.cpp.i
+.PHONY : src/int_util.i
+
+# target to preprocess a source file
+src/int_util.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/int_util.cpp.i
+.PHONY : src/int_util.cpp.i
+
+src/int_util.s: src/int_util.cpp.s
+.PHONY : src/int_util.s
+
+# target to generate assembly for a file
+src/int_util.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/int_util.cpp.s
+.PHONY : src/int_util.cpp.s
 
 src/lexer.o: src/lexer.cpp.o
 .PHONY : src/lexer.o
@@ -426,6 +474,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... resenje"
+	@echo "... src/FinishedSection.o"
+	@echo "... src/FinishedSection.i"
+	@echo "... src/FinishedSection.s"
 	@echo "... src/LSection.o"
 	@echo "... src/LSection.i"
 	@echo "... src/LSection.s"
@@ -444,6 +495,9 @@ help:
 	@echo "... src/emulator.o"
 	@echo "... src/emulator.i"
 	@echo "... src/emulator.s"
+	@echo "... src/int_util.o"
+	@echo "... src/int_util.i"
+	@echo "... src/int_util.s"
 	@echo "... src/lexer.o"
 	@echo "... src/lexer.i"
 	@echo "... src/lexer.s"
