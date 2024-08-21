@@ -1,9 +1,9 @@
 #include "../inc/symbol_table.hpp"
+#include "../inc/section.hpp"
+#include "../inc/binding.hpp"
 
 #include <iostream>
 #include <ostream>
-
-#include "../inc/section.hpp"
 
 SymbolTable* SymbolTable::table = nullptr;
 
@@ -38,11 +38,11 @@ std::ostream& operator<<(std::ostream& out, const SymbolTable& table) {
     for (auto& pair : table.symbols) {
         int linking;
         if (table._extern.find(pair.first) != table._extern.end()) {
-            linking = 0;
+            linking = EXTERN_SYMBOL;
         } else if (table._global.find(pair.first) != table._global.end()) {
-            linking = 1;
+            linking = GLOBAL_SYMBOL;
         } else {
-            linking = 2;
+            linking = LOCAL_SYMBOL;
         }
         out << pair.first << " " << linking << " " << pair.second->occurences.size() << std::endl;
         if (linking != 0) {

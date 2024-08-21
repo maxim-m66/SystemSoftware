@@ -1,7 +1,3 @@
-//
-// Created by ss on 5/8/24.
-//
-
 #ifndef SYMBOL_TABLE_HPP
 #define SYMBOL_TABLE_HPP
 #include <string>

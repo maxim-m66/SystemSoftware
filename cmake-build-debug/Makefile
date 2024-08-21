@@ -129,6 +129,54 @@ resenje/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/build
 .PHONY : resenje/fast
 
+src/LSection.o: src/LSection.cpp.o
+.PHONY : src/LSection.o
+
+# target to build an object file
+src/LSection.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/LSection.cpp.o
+.PHONY : src/LSection.cpp.o
+
+src/LSection.i: src/LSection.cpp.i
+.PHONY : src/LSection.i
+
+# target to preprocess a source file
+src/LSection.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/LSection.cpp.i
+.PHONY : src/LSection.cpp.i
+
+src/LSection.s: src/LSection.cpp.s
+.PHONY : src/LSection.s
+
+# target to generate assembly for a file
+src/LSection.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/LSection.cpp.s
+.PHONY : src/LSection.cpp.s
+
+src/LSymTable.o: src/LSymTable.cpp.o
+.PHONY : src/LSymTable.o
+
+# target to build an object file
+src/LSymTable.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/LSymTable.cpp.o
+.PHONY : src/LSymTable.cpp.o
+
+src/LSymTable.i: src/LSymTable.cpp.i
+.PHONY : src/LSymTable.i
+
+# target to preprocess a source file
+src/LSymTable.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/LSymTable.cpp.i
+.PHONY : src/LSymTable.cpp.i
+
+src/LSymTable.s: src/LSymTable.cpp.s
+.PHONY : src/LSymTable.s
+
+# target to generate assembly for a file
+src/LSymTable.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/LSymTable.cpp.s
+.PHONY : src/LSymTable.cpp.s
+
 src/asembler.o: src/asembler.cpp.o
 .PHONY : src/asembler.o
 
@@ -249,6 +297,30 @@ src/lexer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/lexer.cpp.s
 .PHONY : src/lexer.cpp.s
 
+src/linker.o: src/linker.cpp.o
+.PHONY : src/linker.o
+
+# target to build an object file
+src/linker.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/linker.cpp.o
+.PHONY : src/linker.cpp.o
+
+src/linker.i: src/linker.cpp.i
+.PHONY : src/linker.i
+
+# target to preprocess a source file
+src/linker.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/linker.cpp.i
+.PHONY : src/linker.cpp.i
+
+src/linker.s: src/linker.cpp.s
+.PHONY : src/linker.s
+
+# target to generate assembly for a file
+src/linker.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/linker.cpp.s
+.PHONY : src/linker.cpp.s
+
 src/parser.o: src/parser.cpp.o
 .PHONY : src/parser.o
 
@@ -354,6 +426,12 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... resenje"
+	@echo "... src/LSection.o"
+	@echo "... src/LSection.i"
+	@echo "... src/LSection.s"
+	@echo "... src/LSymTable.o"
+	@echo "... src/LSymTable.i"
+	@echo "... src/LSymTable.s"
 	@echo "... src/asembler.o"
 	@echo "... src/asembler.i"
 	@echo "... src/asembler.s"
@@ -369,6 +447,9 @@ help:
 	@echo "... src/lexer.o"
 	@echo "... src/lexer.i"
 	@echo "... src/lexer.s"
+	@echo "... src/linker.o"
+	@echo "... src/linker.i"
+	@echo "... src/linker.s"
 	@echo "... src/parser.o"
 	@echo "... src/parser.i"
 	@echo "... src/parser.s"

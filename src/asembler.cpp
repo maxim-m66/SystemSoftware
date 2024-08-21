@@ -8,12 +8,6 @@
 #include "../inc/section.hpp"
 #include "../inc/symbol_table.hpp"
 
-enum Linking {
-    EXTERN_SYMBOL,
-    LOCAL_SYMBOL,
-    GLOBAL_SYMBOL
-};
-
 using namespace std;
 
 int main(int argc, char **argv) {
@@ -51,18 +45,14 @@ int main(int argc, char **argv) {
     Section::set_jumps();
     ofstream output;
     output.open(output_filename, ios::out);
-    //SymbolTable::symbolise();
     set<string> non_local;
     SymbolTable &symbol_table = SymbolTable::get_table();
     output << symbol_table;
     std::vector<Section *> &sections = Section::get_sections();
-    StringSection *strings = Section::get_strings();
     output << "sections " << sections.size() - 1 << endl;
-    int offset = 1 + sections.size();
     for (auto &section: sections) {
         if (section->get_name() == ".strtab") continue;
         output << section->get_name() << " " << section->size() << endl;
-        //offset += section->size();
         output << *section;
     }
 //    output << ".strtab" << " " << strings->size() << " " << offset << endl;

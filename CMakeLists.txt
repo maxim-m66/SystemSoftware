@@ -18,4 +18,11 @@ add_executable(resenje
         inc/symbol_table.hpp
         src/emulator.cpp
         src/elf.cpp
-        inc/elf.hpp)
+        inc/elf.hpp
+        src/linker.cpp
+        src/linker.cpp
+        src/LSymTable.cpp
+        inc/LSymTable.hpp
+        inc/binding.hpp
+        src/LSection.cpp
+        inc/LSection.hpp)

@@ -1,8 +1,9 @@
+.extern C
 .section txt
 beq %r1, %r2, A
 beq %r1, %r2, A
 beq %r1, %r2, B
-beq %r1, %r2, 3
+ld [%r1 + C], %r2
 int
 int
 A: ret
