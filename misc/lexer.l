@@ -1,5 +1,6 @@
 %{
 #include "../inc/parser.hpp"
+#include <iostream>
 %}
 
 spc [ ]*
@@ -32,7 +33,7 @@ reg "%"(("r"{digit}[0-5]?)|"pc"|"sp")
 ".skip" { yylval.str = strdup(yytext); return SKIP; }
 ".ascii" { yylval.str = strdup(yytext); return ASCII; }
 ".equ" { yylval.str = strdup(yytext); return EQU; }
-"\"".*"\""[\n] { yylval.str = strdup(yytext); return STRING; }
+"\""({alphanum}|[ ])+"\"" { yylval.str = strdup(yytext); return STRING; }
 "+"|"-"|"*"|"/" { yylval.str = strdup(yytext); return OPERATOR; }
 "halt"|"int" { yylval.str = strdup(yytext); return INONE; }
 "ret" { yylval.str = strdup(yytext); return RET; }

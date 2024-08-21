@@ -49,12 +49,12 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/home/ss/resenje/cmake-build-debug",
-		"source" : "/home/ss/resenje"
+		"build" : "/home/os/CLionProjects/SystemSoftware/cmake-build-debug",
+		"source" : "/home/os/CLionProjects/SystemSoftware"
 	},
 	"version" : 
 	{
 		"major" : 2,
-		"minor" : 6
+		"minor" : 7
 	}
 }

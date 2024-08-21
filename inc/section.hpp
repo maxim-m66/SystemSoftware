@@ -1,5 +1,6 @@
 #ifndef SECTION_HPP
 #define SECTION_HPP
+
 #include <unordered_map>
 #include <vector>
 
@@ -12,55 +13,69 @@ class Section {
 public:
     virtual ~Section() = default;
 
-    uint32& next();
+    uint32 &next();
 
-    virtual int size() { return line_count * 4; }
+    void ascii(std::string &);
 
-    void symbolise(int index, int value);
+    virtual int size() { return line_count; }
+
+    void symbolise(int index, int value, bool whole = false);
+
+    static void set_jumps();
 
     [[nodiscard]] int line() const { return line_count; }
 
-    [[nodiscard]] const std::string& get_name() const { return name; }
+    [[nodiscard]] const std::string &get_name() const { return name; }
 
     [[nodiscard]] int get_offset() const { return name_offset; }
 
-    static std::vector<std::string>& get_extern() { return _extern; }
+    static Section *get_section(const std::string &name);
 
-    static std::vector<std::string>& get_global() { return _global; }
+    static std::vector<Section *> &get_sections();
 
-    static Section* get_section(const std::string& name);
+    static StringSection *get_strings() { return reinterpret_cast<StringSection *>(sections[".strtab"]); }
 
-    static std::vector<Section*>& get_sections();
+    static uint32 make_word(uint8 *nibbles);
 
-    static StringSection* get_strings() { return reinterpret_cast<StringSection*>(sections[".strtab"]); }
+    static void flush(std::ostream &out);
 
-    static uint32 make_word(uint8* nibbles);
+    void new_jump( int value, const std::string &symbol) {
+        this->jumps.push_back({this->line_count, value, symbol});
+    }
 
-    static void flush(std::ostream& out);
-
-    friend std::ostream& operator<<(std::ostream& out, const Section& section);
+    friend std::ostream &operator<<(std::ostream &out, const Section &section);
 
 protected:
-    Section(const std::string& name, int name_offset);
-    static std::unordered_map<std::string, Section*> sections;
-    static std::vector<std::string> _extern;
-    static std::vector<std::string> _global;
+
+    struct Jump {
+        int line;
+        int value;
+        std::string symbol;
+    };
+
+    Section(const std::string &name, int name_offset);
+
+    static std::unordered_map<std::string, Section *> sections;
     std::vector<uint32> words;
+    std::vector<Jump> jumps;
     std::string name;
     int line_count;
     int name_offset;
+    int ascii_byte;
 };
 
 class StringSection : public Section {
 public:
-    void add(const std::string&);
+    void add(const std::string &);
 
     int size() override { return line_count; }
 
 private:
     friend class Section;
+
     explicit StringSection(int name_offset);
-    friend std::ostream& operator<<(std::ostream& out, const StringSection& section);
+
+    friend std::ostream &operator<<(std::ostream &out, const StringSection &section);
 };
 
 #endif // SECTION_HPP

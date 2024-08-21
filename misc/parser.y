@@ -30,6 +30,8 @@ void fill(uint8 opcode, uint8 mod = 0, uint8 a = 0, uint8 b = 0, uint8 c = 0, in
 
 void displacement(uint8* instruction, int displacement);
 
+int endian(int number);
+
 void yyerror(const char *s);
 
 std::string to_my_string(std::string);
@@ -86,18 +88,19 @@ expression: INTEGER {
 terminate: COMMENT |;
 
 end: END terminate {
+    YYABORT;
 };
 
 global: GLOBAL symbol_list terminate {
     for (auto& pair : symbols) {
-        Section::get_global().push_back(pair.symbol);
+        symbol_table.get_global().insert(pair.symbol);
     }
     symbols.clear();
 };
 
 extern: EXTERN symbol_list terminate {
     for (auto& pair : symbols) {
-        Section::get_extern().push_back(pair.symbol);
+        symbol_table.get_extern().insert(pair.symbol);
     }
     symbols.clear();
 };
@@ -108,11 +111,11 @@ section: SECTION SYMBOL terminate {
 
 word: WORD values_list terminate {
     for (pair value : symbols) {
-        if (value.is_symbol) {
-            symbol_table.new_occurrence(value.symbol, section->get_name(), section->line());
+        if (!value.is_symbol) {
+            symbol_table.new_occurrence(value.symbol, section->get_name(), section->line(), true);
             section->next() = 0;
         } else {
-            section->next() = to_int(value.symbol);
+            section->next() = endian(to_int(value.symbol));
         }
     }
     symbols.clear();
@@ -136,6 +139,9 @@ label: SYMBOL LABEL terminate {
 };
 
 ascii: ASCII STRING terminate {
+    std::string string = $2;
+    section->ascii(string);
+
 };
 
 equ: EQU SYMBOL COMMA expression terminate {
@@ -159,23 +165,29 @@ iret: IRET terminate {
 };
 
 jump: JUMP SYMBOL terminate {
-    symbol_table.new_occurrence($2, section->get_name(), section->line());
-    fill(Codes::opcode[$1], Codes::mod[$1]);
+    //symbol_table.new_occurrence($2, section->get_name(), section->line() + 1, true);
+    section->new_jump(-1, $2);
+    fill(Codes::opcode[$1], Codes::mod[$1], 15);
     section->next() = Section::make_word(instruction);
 }
     | JUMP INTEGER terminate {
-    fill(Codes::opcode[$1], Codes::mod[$1], 0, 0, 0, to_int($2));
+    section->new_jump(to_int($2), "");
+    fill(Codes::opcode[$1], Codes::mod[$1], 15);
     section->next() = Section::make_word(instruction);
 };
 
 branch: BRANCH REGISTER COMMA REGISTER COMMA SYMBOL terminate {
-    symbol_table.new_occurrence($6, section->get_name(), section->line());
-    fill(Codes::opcode[$1], Codes::mod[$1], 0, Codes::reg[$2], Codes::reg[$4]);
+    //symbol_table.new_occurrence($6, section->get_name(), section->line() + 1, true);
+    section->new_jump(-1, $6);
+    fill(Codes::opcode[$1], Codes::mod[$1], 15, Codes::reg[$2], Codes::reg[$4]);
     section->next() = Section::make_word(instruction);
+    //section->next() = 0;
 }
     | BRANCH REGISTER COMMA REGISTER COMMA INTEGER terminate {
-    fill(Codes::opcode[$1], Codes::mod[$1], 0, Codes::reg[$2], Codes::reg[$4], to_int($6));
+    //fill(Codes::opcode[$1], Codes::mod[$1], 15, Codes::reg[$2], Codes::reg[$4]);
+    section->new_jump(to_int($6), "");
     section->next() = Section::make_word(instruction);
+    //section->next() = endian(to_int($6));
 };
 
 push: PUSH REGISTER terminate {
@@ -298,7 +310,7 @@ int to_int(const char *string) {
     int start = 0;
     int end = strlen(string);
     if (end < 3);
-    else if (string[1] == 'h') base = 16;
+    else if (string[1] == 'x') base = 16;
     else if (string[1] == 'o') base = 8;
     else if (string[1] == 'b') base = 2;
     if (base != 10) start = 2;
@@ -327,10 +339,20 @@ void displacement(uint8* instruction, int displacement) {
     }
 }
 
+int endian(int number) {
+    unsigned int b0 = number & 0xFF, b1 = number & 0xFF00, b2 = number & 0xFF0000, b3 = number & 0xFF000000;
+    int ret = 0;
+    ret |= b0 << 24;
+    ret |= b1 << 8;
+    ret |= b2 >> 8;
+    ret |= b3 >> 24;
+    return ret;
+}
+
 std::string to_my_string(std::string binary) {
     std::string ret = "";
     for(int i = 0; i < 32; i ++) {
-        if (i % 4 == 0) ret += " ";
+        if (i % 8 == 0 and i > 0) ret += " ";
         ret += binary[i];
     }
     return ret;

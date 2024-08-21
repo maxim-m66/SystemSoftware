@@ -1,19 +1,25 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <set>
 
-#include "../inc/elf.hpp"
 #include "../inc/lexer.hpp"
 #include "../inc/parser.hpp"
 #include "../inc/section.hpp"
 #include "../inc/symbol_table.hpp"
+
+enum Linking {
+    EXTERN_SYMBOL,
+    LOCAL_SYMBOL,
+    GLOBAL_SYMBOL
+};
 
 using namespace std;
 
 int main(int argc, char **argv) {
     string input_filename, output_filename;
 
-	if (argc != 2 && argc != 4) return 0;
+    if (argc != 2 && argc != 4) return 0;
 
     if (argc == 2) {
         input_filename = argv[1];
@@ -24,7 +30,7 @@ int main(int argc, char **argv) {
         output_filename = argv[2];
     }
 
-    if (input_filename[input_filename.size() - 1] != 's')  {
+    if (input_filename[input_filename.size() - 1] != 's') {
         cerr << "Invalid input file" << endl;
         return -1;
     }
@@ -39,29 +45,31 @@ int main(int argc, char **argv) {
         string line;
         getline(input, line);
         yy_scan_string(line.c_str());
-        yyparse();
-    } while (!input.eof());
+        if (yyparse()) break;
+    }
     input.close();
+    Section::set_jumps();
     ofstream output;
     output.open(output_filename, ios::out);
-    SymbolTable::symbolise();
-    std::vector<Section*>& sections = Section::get_sections();
-    output << "sections " << sections.size() << endl;
-    int offset = 0;
-    for (auto& section : sections) {
+    //SymbolTable::symbolise();
+    set<string> non_local;
+    SymbolTable &symbol_table = SymbolTable::get_table();
+    output << symbol_table;
+    std::vector<Section *> &sections = Section::get_sections();
+    StringSection *strings = Section::get_strings();
+    output << "sections " << sections.size() - 1 << endl;
+    int offset = 1 + sections.size();
+    for (auto &section: sections) {
+        if (section->get_name() == ".strtab") continue;
         output << section->get_name() << " " << section->size() << endl;
+        //offset += section->size();
+        output << *section;
     }
-    for (auto& section : sections) {
-        cout << section->get_name() << endl;
-        if (section->get_name() == ".strtab") {
-            StringSection &section1 = reinterpret_cast<StringSection&>(*section);
-            output << section1;
-            cout << section1;
-        } else {
-            output << *section;
-            cout << *section;
-        }
-    }
+//    output << ".strtab" << " " << strings->size() << " " << offset << endl;
+//    for (auto &section: sections) {
+//        if (section->get_name() == ".strtab") continue;
+//    }
+//    output << *strings;
     //make_linkable(output, sections);
     //output.close();
     //input.open(output_filename, ios::binary | ios::in);
