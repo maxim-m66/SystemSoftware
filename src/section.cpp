@@ -14,9 +14,10 @@ extern std::vector<std::string> mnemonics;
 
 std::string to_my_string(std::string);
 
-Section::Section(const std::string &name, int name_offset) : name(name), line_count(0), name_offset(name_offset) {}
+Section::Section(const std::string &name) : name(name), line_count(0) {}
 
-std::unordered_map<std::string, Section *> Section::sections({{".strtab", new StringSection(0)}});
+std::unordered_map<std::string, Section *> Section::sections;
+std::vector<std::string> Section::section_order;
 
 uint32 &Section::next() {
     this->ascii_byte = 0;
@@ -72,16 +73,16 @@ void Section::symbolise(int index, int value, bool whole) {
 
 Section *Section::get_section(const std::string &name) {
     if (Section::sections.find(name) == Section::sections.end()) {
-        Section::sections[name] = new Section(name, get_strings()->line());
-        get_strings()->add(name);
+        Section::sections[name] = new Section(name);
+        section_order.push_back(name);
     }
     return Section::sections[name];
 }
 
 std::vector<Section *> &Section::get_sections() {
     std::vector<Section *> *result = new std::vector<Section *>();
-    for (auto &pair: Section::sections) {
-        result->push_back(pair.second);
+    for (auto &section: Section::section_order) {
+        result->push_back(sections[section]);
     }
     return *result;
 }
@@ -123,22 +124,4 @@ void Section::set_jumps() {
             section->symbolise(jump.line, (section->line() - jump.line - 2) * 4);
         }
     }
-}
-
-std::ostream &operator<<(std::ostream &out, const StringSection &section) {
-    for (const uint32 word: section.words) {
-        out << static_cast<char>(word & 0xFF);
-    }
-    out << std::endl;
-    return out;
-}
-
-void StringSection::add(const std::string &string) {
-    for (const char c: string) {
-        this->next() = c;
-    }
-}
-
-StringSection::StringSection(int name_offset) : Section(".strtab", name_offset) {
-    this->add(".strtab");
 }

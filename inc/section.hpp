@@ -25,13 +25,9 @@ public:
 
     [[nodiscard]] const std::string &get_name() const { return name; }
 
-    [[nodiscard]] int get_offset() const { return name_offset; }
-
     static Section *get_section(const std::string &name);
 
     static std::vector<Section *> &get_sections();
-
-    static StringSection *get_strings() { return reinterpret_cast<StringSection *>(sections[".strtab"]); }
 
     static uint32 make_word(uint8 *nibbles);
 
@@ -51,29 +47,15 @@ protected:
         std::string symbol;
     };
 
-    Section(const std::string &name, int name_offset);
+    Section(const std::string &name);
 
     static std::unordered_map<std::string, Section *> sections;
+    static std::vector<std::string> section_order;
     std::vector<uint32> words;
     std::vector<Jump> jumps;
     std::string name;
     int line_count;
-    int name_offset;
     int ascii_byte;
-};
-
-class StringSection : public Section {
-public:
-    void add(const std::string &);
-
-    int size() override { return line_count; }
-
-private:
-    friend class Section;
-
-    explicit StringSection(int name_offset);
-
-    friend std::ostream &operator<<(std::ostream &out, const StringSection &section);
 };
 
 #endif // SECTION_HPP

@@ -3,6 +3,8 @@
 #include <iostream>
 #include "../inc/LinkerSection.hpp"
 #include "../inc/int_util.hpp"
+#include <iomanip>
+#define BREAK 8
 
 std::vector<std::string> LinkerSection::file_order;
 std::vector<std::string> LinkerSection::section_order;
@@ -35,14 +37,13 @@ unsigned int bin_to_int(const std::string &string) {
 }
 
 OldSection::OldSection(std::ifstream &file, int lines) {
-    this->lines = lines;
     for (int i = 0; i < lines; i++) {
         std::string s0, s1, s2, s3;
         file >> s0 >> s1 >> s2 >> s3;
         this->bytes.push_back(bin_to_int(s0));
-        this->bytes.push_back(bin_to_int(s0));
-        this->bytes.push_back(bin_to_int(s0));
-        this->bytes.push_back(bin_to_int(s0));
+        this->bytes.push_back(bin_to_int(s1));
+        this->bytes.push_back(bin_to_int(s2));
+        this->bytes.push_back(bin_to_int(s3));
     }
 }
 
@@ -53,8 +54,8 @@ void OldSection::print() {
         std::cout << name << "\n";
         int i = 0;
         for (const unsigned int word: section.bytes) {
-            std::bitset<16> binary(word);
-            std::cout << binary.to_string() << ((i % 4) ? " " : "\n");
+            std::bitset<8> binary(word);
+            std::cout << binary.to_string() << ((i % 4 != 3) ? " " : "\n");
             i++;
         }
         std::cout << std::endl;
@@ -102,7 +103,7 @@ void FinishedSection::print() {
         std::cout << sectionName << std::endl;
         for (int i = 0; i < section->length; i++) {
             std::bitset<8> binary(section->bytes[i]);
-            std::cout << binary.to_string( )<< " ";
+            std::cout << binary.to_string() << " ";
             if (i % 4 == 3) std::cout << std::endl;
         }
         std::cout << std::endl;
@@ -115,8 +116,7 @@ LinkerSection::symbolize(const std::string &file, const std::string &section, in
 }
 
 void FinishedSection::symbolize(const std::string &file, int location, uint32 value, bool whole) {
-    location = location*4 + this->subsections_start[file];
-    std::cout << location;
+    location = location * 4 + this->subsections_start[file];
     if (whole) {
         uint16 b0 = value & 0xFF, b1 = value & 0xFF00, b2 = value & 0xFF0000, b3 = value & 0xFF000000;
         this->bytes[location] = b0;
@@ -132,8 +132,18 @@ void FinishedSection::symbolize(const std::string &file, int location, uint32 va
 }
 
 
-void LinkerSection::out_hex() {
-    for (auto &section : finished_sections) {
+void LinkerSection::out_hex(std::ofstream &out) {
+    FinishedSection::out_hex(out);
+}
 
+void FinishedSection::out_hex(std::ofstream &out) {
+    out << std::hex;
+    for (auto &section_name: section_order) {
+        FinishedSection *section = finished_sections[section_name];
+        for (int i = 0, location = section->start_address; i < section->bytes.size(); i++, location++) {
+            if (i % BREAK == 0) out << std::setw(4) << std::setfill('0') << location << ": ";
+            out << std::setw(2) << std::setfill('0') << (uint16) section->bytes[i] << ((i % BREAK == 7) ? "\n" : " ");
+        }
+        if (section->bytes.size() % BREAK != 0) out << '\n';
     }
 }

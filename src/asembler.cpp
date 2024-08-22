@@ -49,25 +49,10 @@ int main(int argc, char **argv) {
     SymbolTable &symbol_table = SymbolTable::get_table();
     output << symbol_table;
     std::vector<Section *> &sections = Section::get_sections();
-    output << "sections " << sections.size() - 1 << endl;
+    output << "sections " << sections.size() << endl;
     for (auto &section: sections) {
         if (section->get_name() == ".strtab") continue;
         output << section->get_name() << " " << section->size() << endl;
         output << *section;
     }
-//    output << ".strtab" << " " << strings->size() << " " << offset << endl;
-//    for (auto &section: sections) {
-//        if (section->get_name() == ".strtab") continue;
-//    }
-//    output << *strings;
-    //make_linkable(output, sections);
-    //output.close();
-    //input.open(output_filename, ios::binary | ios::in);
-    //cout << *Section::get_section("txt");
-    // while (true) {
-    //     if (input.eof()) break;
-    //     int a = input.get();
-    //     if (a != 16);
-    //     cout << hex << a << endl;
-    // }
 }

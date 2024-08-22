@@ -32,7 +32,7 @@ public:
 
     static void symbolize(const std::string &file, const std::string &section, int location, uint32 value, bool whole);
 
-    static void out_hex();
+    static void out_hex(std::ofstream &out);
 
 protected:
     static std::vector<std::string> file_order;
@@ -57,8 +57,6 @@ public:
 private:
     OldSection(std::ifstream &file, int lines);
 
-    int origin = -1;
-    int lines;
     std::vector<uint8> bytes;
 };
 
@@ -76,6 +74,7 @@ public:
 
     void symbolize(const std::string &file, int location, uint32 value, bool whole);
 
+    static void out_hex(std::ofstream &out);
 private:
     std::vector<uint8> bytes;
     std::string name;

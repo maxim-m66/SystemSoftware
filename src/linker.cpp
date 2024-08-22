@@ -46,13 +46,13 @@ std::string read_file(const std::string &filename) {
 
 int main(int argc, char **argv) {
     bool executable = false, relocatable = false;
-    string input, output = "out.hex";
+    string input, output_filename = "out.hex";
     vector<string> files;
     unordered_map<string, int> starts;
     for (int i = 1; i < argc; i++) {
         input = argv[i];
         if (input == "-o") {
-            output = argv[++i];
+            output_filename = argv[++i];
             continue;
         } else if (input[EQ] == '=') {
             int at = input.find('@');
@@ -91,10 +91,15 @@ int main(int argc, char **argv) {
 
     LinkerSection::link();
 
+    ofstream output;
+    output.open("tests/" + output_filename, ios::out);
     if (executable) {
+        OldSection::print();
+        FinishedSection::print();
         LSymTable::resolve_symbols();
         LSymTable::relocate();
-        LinkerSection::out_hex();
+        LinkerSection::out_hex(output);
+        FinishedSection::print();
     }
 //        LSymTable::relocate();
 //        LinkerSection::out_hex();

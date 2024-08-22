@@ -66,8 +66,6 @@ void LSymTable::resolve_symbols() {
 
 void LSymTable::relocate() {
     for (auto &data: linker_table) {
-        std::cout << data.symbol << " ";
         LinkerSection::symbolize(data.file, data.section, data.byte, symbol_values[data.symbol], data.whole);
-        std::cout << '\n';
     }
 }
