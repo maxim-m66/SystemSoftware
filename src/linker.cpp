@@ -39,12 +39,13 @@ std::string read_file(const std::string &filename) {
     if (header != "sections") return "No sections in file " + filename;
     for (int i = 0; i < elements; i++) {
         file >> name >> lines;
-        OldSection::add_section(filename, file, name, lines);
+        OldSection::add_section(filename, file, name, lines / 4);
     }
     return "";
 }
 
 int main(int argc, char **argv) {
+
     bool executable = false, relocatable = false;
     string input, output_filename = "out.hex";
     vector<string> files;
@@ -80,33 +81,17 @@ int main(int argc, char **argv) {
         }
     }
 
-    vector<string> &undefined = LSymTable::check_undefined();
-    if (!undefined.empty()) {
-        cerr << "undefined reference to:\n";
-        for (auto &symbol: undefined) {
-            cerr << symbol << ";\n";
-        }
-        exit(0);
-    }
-
     LinkerSection::link();
 
     ofstream output;
     output.open("tests/" + output_filename, ios::out);
     if (executable) {
-        OldSection::print();
-        FinishedSection::print();
+        LSymTable::check_undefined();
         LSymTable::resolve_symbols();
         LSymTable::relocate();
         LinkerSection::out_hex(output);
-        FinishedSection::print();
+    } else if (relocatable) {
+        LSymTable::out_obj(output);
+        LinkerSection::out_obj(output);
     }
-//        LSymTable::relocate();
-//        LinkerSection::out_hex();
-//    } else if (relocatable) {
-//        LinkerSection::out_obj();
-//    }
-//    FinishedSection::print();
-//    LSymTable::print();
-//    OldSection::print();
-    }
+}

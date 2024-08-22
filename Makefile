@@ -37,6 +37,7 @@ asembler: $(ASEMBLER_IN) lexer parser
 
 runasm:
 	./$(ASEMBLER_OUT) tests/test1.s
+	./$(ASEMBLER_OUT) tests/test2.s
 
 lexer: $(LEXER_IN)
 	$(LEX) $(LEX_FLAGS) $(LEXER_IN)
@@ -55,10 +56,10 @@ linker: cleanlinker
 	$(COMPILE) $(LINKER_FLAGS) $(LINKER_IN)
 
 runlinker: linker
-	./$(LINKER_OUT) -o out test1.o test2.o -hex
+	./$(LINKER_OUT) -o out1.hex out -hex
 
 clean:
-	rm -f $(LEXER_OUT) $(LEXER_HEADER) $(PARSER_OUT) $(PARSER_HEADER) $(ASEMBLER_OUT) $(LINKER_OUT) tests/*.o
+	rm -f $(LEXER_OUT) $(LEXER_HEADER) $(PARSER_OUT) $(PARSER_HEADER) $(ASEMBLER_OUT) $(LINKER_OUT) tests/*.o tests/*.hex
 
 cleanlinker:
 	rm -f $(LINKER_OUT)

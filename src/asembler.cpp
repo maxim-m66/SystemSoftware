@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
     output << "sections " << sections.size() << endl;
     for (auto &section: sections) {
         if (section->get_name() == ".strtab") continue;
-        output << section->get_name() << " " << section->size() << endl;
+        output << section->get_name() << " " << section->line() << endl;
         output << *section;
     }
 }

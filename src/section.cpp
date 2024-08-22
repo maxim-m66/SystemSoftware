@@ -14,73 +14,69 @@ extern std::vector<std::string> mnemonics;
 
 std::string to_my_string(std::string);
 
-Section::Section(const std::string &name) : name(name), line_count(0) {}
+Section::Section(const std::string &name) : name(name), byte_count(0) {}
 
 std::unordered_map<std::string, Section *> Section::sections;
 std::vector<std::string> Section::section_order;
+int Section::txt_called = 0;
 
-uint32 &Section::next() {
-    this->ascii_byte = 0;
-    this->words.push_back(0);
-    this->line_count++;
-    return this->words.back();
+void Section::next_word(uint32 word) {
+    this->byte_count += 4;
+    uint32 b0 = word & 0xFF, b1 = word & 0xFF00, b2 = word & 0xFF0000, b3 = word & 0xFF000000;
+    this->bytes.push_back(b3 >> 24);
+    this->bytes.push_back(b2 >> 16);
+    this->bytes.push_back(b1 >> 8);
+    this->bytes.push_back(b0);
+}
+
+void Section::next_byte(uint8 byte) {
+    this->byte_count += 1;
+    this->bytes.push_back(byte);
 }
 
 void Section::ascii(std::string &string) {
     int end = string.size() - 1;
     int start = 1;
-    if (this->ascii_byte != 0) {
-        uint32 last = this->words.back();
-        uint32 next = 0;
-        while (this->ascii_byte > 0) {
-            next <<= 8;
-            next |= string[start++];
-            this->ascii_byte--;
-        }
-        this->words.back() = last | next;
-    }
-    for (int i = start; i < end; i += 4) {
-        int c0 = 0, c1 = 0, c2 = 0, c3 = 0;
-        c0 = string[i];
-        if (i + 1 >= end) {
-            this->ascii_byte = 3;
-        } else if (i + 2 >= end) {
-            c1 = string[i + 1];
-            this->ascii_byte = 2;
-        } else if (i + 3 >= end) {
-            c1 = string[i + 1];
-            c2 = string[i + 2];
-            this->ascii_byte = 1;
-        } else {
-            c1 = string[i + 1];
-            c2 = string[i + 2];
-            c3 = string[i + 3];
-            this->ascii_byte = 0;
-        }
-        this->line_count++;
-        this->words.push_back((c0 << 24) | (c1 << 16) | (c2 << 8) | c3);
+    for (int i = start; i < end; i++) {
+        this->next_byte(string[i]);
     }
 }
 
 void Section::symbolise(int index, int value, bool whole) {
     if (whole) {
-        this->words[index] = endian(value);
+        uint32 b0 = value & 0xFF, b1 = value & 0xFF00, b2 = value & 0xFF0000, b3 = value & 0xFF000000;
+        this->bytes[index + 3] = b3 >> 24;
+        this->bytes[index + 2] = b2 >> 16;
+        this->bytes[index + 1] = b1 >> 8;
+        this->bytes[index] = b0;
     } else {
-        value = value & 0xFFF;
-        this->words[index] |= value;
+        uint32 halfbyte = value & 0xF00, byte = value & 0xFF;
+        this->bytes[index + 2] |= halfbyte;
+        this->bytes[index + 3] = byte;
     }
 }
 
 Section *Section::get_section(const std::string &name) {
-    if (Section::sections.find(name) == Section::sections.end()) {
-        Section::sections[name] = new Section(name);
-        section_order.push_back(name);
+    if (name == "txt") {
+        if (txt_called == 0) {
+            txt_called = 1;
+            Section::sections[name] = new Section(name);
+        } else if (txt_called == 1 && Section::sections["txt"]->line() == 0) {
+            txt_called = 2;
+            section_order.push_back(name);
+        }
+    } else {
+        if (Section::sections.find(name) == Section::sections.end()) {
+            Section::sections[name] = new Section(name);
+            section_order.push_back(name);
+        }
     }
     return Section::sections[name];
 }
 
 std::vector<Section *> &Section::get_sections() {
     std::vector<Section *> *result = new std::vector<Section *>();
+    if (txt_called == 1) result->push_back(sections["txt"]);
     for (auto &section: Section::section_order) {
         result->push_back(sections[section]);
     }
@@ -104,9 +100,10 @@ void Section::flush(std::ostream &out) {
 }
 
 std::ostream &operator<<(std::ostream &out, const Section &section) {
-    for (const uint32 word: section.words) {
-        std::bitset<32> binary(word);
-        out << to_my_string(binary.to_string()) << std::endl;
+    int i = 0;
+    for (const uint32 word: section.bytes) {
+        std::bitset<8> binary(word);
+        out << binary.to_string() << (i++ % 4 == 3 ? "\n" : " ");
     }
     return out;
 }
@@ -117,11 +114,11 @@ void Section::set_jumps() {
         for (auto &jump: section->jumps) {
             if (jump.value == -1) {
                 SymbolTable::get_table().new_occurrence(jump.symbol, pair.first, section->line(), true);
-                section->next() = 0;
+                section->next_word(0);
             } else {
-                section->next() = endian(jump.value);
+                section->next_word(endian(jump.value));
             }
-            section->symbolise(jump.line, (section->line() - jump.line - 2) * 4);
+            section->symbolise(jump.line, (section->line() - jump.line - 8));
         }
     }
 }

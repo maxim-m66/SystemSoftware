@@ -30,9 +30,13 @@ public:
 
     static int get_symbol_value(std::string &section, std::string &filename, int byte);
 
+    static int get_file_displacement(std::string &section, std::string filename);
+
     static void symbolize(const std::string &file, const std::string &section, int location, uint32 value, bool whole);
 
-    static void out_hex(std::ofstream &out);
+    static void out_hex(std::ostream &out);
+
+    static void out_obj(std::ostream &out);
 
 protected:
     static std::vector<std::string> file_order;
@@ -68,13 +72,18 @@ public:
 
     int get_symbol_value(std::string &filename, int byte);
 
+    int get_file_displacement(std::string filename);
+
     int get_size() const { return length; }
 
     static void print();
 
     void symbolize(const std::string &file, int location, uint32 value, bool whole);
 
-    static void out_hex(std::ofstream &out);
+    static void out_hex(std::ostream &out);
+
+    void out_obj(std::ostream &out);
+
 private:
     std::vector<uint8> bytes;
     std::string name;

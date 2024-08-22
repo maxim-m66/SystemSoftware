@@ -11,17 +11,17 @@ class Section {
 public:
     virtual ~Section() = default;
 
-    uint32 &next();
+    void next_word(uint32 word);
+
+    void next_byte(uint8 byte);
 
     void ascii(std::string &);
-
-    virtual int size() { return line_count; }
 
     void symbolise(int index, int value, bool whole = false);
 
     static void set_jumps();
 
-    [[nodiscard]] int line() const { return line_count; }
+    [[nodiscard]] int line() const { return byte_count; }
 
     [[nodiscard]] const std::string &get_name() const { return name; }
 
@@ -34,7 +34,7 @@ public:
     static void flush(std::ostream &out);
 
     void new_jump( int value, const std::string &symbol) {
-        this->jumps.push_back({this->line_count, value, symbol});
+        this->jumps.push_back({this->byte_count, value, symbol});
     }
 
     friend std::ostream &operator<<(std::ostream &out, const Section &section);
@@ -51,11 +51,11 @@ protected:
 
     static std::unordered_map<std::string, Section *> sections;
     static std::vector<std::string> section_order;
-    std::vector<uint32> words;
+    static int txt_called;
+    std::vector<uint8> bytes;
     std::vector<Jump> jumps;
     std::string name;
-    int line_count;
-    int ascii_byte;
+    int byte_count;
 };
 
 #endif // SECTION_HPP

@@ -115,9 +115,9 @@ word: WORD values_list terminate {
     for (pair value : symbols) {
         if (!value.is_symbol) {
             symbol_table.new_occurrence(value.symbol, section->get_name(), section->line(), true);
-            section->next() = 0;
+            section->next_word(0);
         } else {
-            section->next() = endian(to_int(value.symbol));
+            section->next_word(endian(to_int(value.symbol)));
         }
     }
     symbols.clear();
@@ -125,7 +125,7 @@ word: WORD values_list terminate {
 
 skip: SKIP INTEGER terminate {
     for (int i = 0; i < to_int($2); i++) {
-        section->next() = 0;
+        section->next_byte(0);
     }
 }
 
@@ -136,7 +136,7 @@ label: SYMBOL LABEL terminate {
     if (symbol_table.has_value($1)) {
         throw "Symbol already defined";
     }
-    symbol_table.value($1) = section->line()*4;
+    symbol_table.value($1) = section->line();
     symbol_table.section($1) = section->get_name();
 };
 
@@ -151,143 +151,138 @@ equ: EQU SYMBOL COMMA expression terminate {
 
 inone: INONE terminate {
     fill(Codes::opcode[$1]);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 };
 
 ret: RET terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg["%pc"], Codes::reg["%sp"], 0, 1);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 };
 
 iret: IRET terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg["%status"], Codes::reg["%sp"], 0, 1);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
     fill(Codes::opcode["ret"], Codes::mod["ret"], Codes::reg["%pc"], Codes::reg["%sp"], 0, 1);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 };
 
 jump: JUMP SYMBOL terminate {
-    //symbol_table.new_occurrence($2, section->get_name(), section->line() + 1, true);
     section->new_jump(-1, $2);
     fill(Codes::opcode[$1], Codes::mod[$1], 15);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 }
     | JUMP INTEGER terminate {
     section->new_jump(to_int($2), "");
     fill(Codes::opcode[$1], Codes::mod[$1], 15);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 };
 
 branch: BRANCH REGISTER COMMA REGISTER COMMA SYMBOL terminate {
-    //symbol_table.new_occurrence($6, section->get_name(), section->line() + 1, true);
     section->new_jump(-1, $6);
     fill(Codes::opcode[$1], Codes::mod[$1], 15, Codes::reg[$2], Codes::reg[$4]);
-    section->next() = Section::make_word(instruction);
-    //section->next() = 0;
+    section->next_word(Section::make_word(instruction));
 }
     | BRANCH REGISTER COMMA REGISTER COMMA INTEGER terminate {
-    //fill(Codes::opcode[$1], Codes::mod[$1], 15, Codes::reg[$2], Codes::reg[$4]);
     section->new_jump(to_int($6), "");
-    section->next() = Section::make_word(instruction);
-    //section->next() = endian(to_int($6));
+    section->next_word(Section::make_word(instruction));
 };
 
 push: PUSH REGISTER terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg["%sp"], 0, Codes::reg[$2], -1);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 };
 
 pop: POP REGISTER terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$2], Codes::reg["%sp"], 0, 1);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 };
 
 alo: ALO REGISTER COMMA REGISTER terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$4], Codes::reg[$2], Codes::reg[$4]);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 };
 
 xchg: XCHG REGISTER COMMA REGISTER {
     fill(Codes::opcode[$1], 0, 0, Codes::reg[$2], Codes::reg[$4]);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 };
 
 not: NOT REGISTER {
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$2], Codes::reg[$2]);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 };
 
 ld: LD IMMED INTEGER COMMA REGISTER terminate {
     fill(Codes::opcode[$1], Codes::mod["limmed"], Codes::reg[$5], 0, 0, to_int($3));
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 }
     | LD IMMED SYMBOL COMMA REGISTER terminate {
     symbol_table.new_occurrence($3, section->get_name(), section->line());
     fill(Codes::opcode[$1], Codes::mod["limmed"], Codes::reg[$5]);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 }
     | LD INTEGER COMMA REGISTER terminate {
     fill(Codes::opcode[$1], Codes::mod["lmem"], Codes::reg[$4], 0, 0, to_int($2));
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 }
     | LD SYMBOL COMMA REGISTER terminate {
     symbol_table.new_occurrence($2, section->get_name(), section->line());
     fill(Codes::opcode[$1], Codes::mod["lmem"], Codes::reg[$4]);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 }
     | LD REGISTER COMMA REGISTER terminate {
     fill(Codes::opcode[$1], Codes::mod["lreg"], Codes::reg[$4], Codes::reg[$2]);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 }
     | LD LBRACKET REGISTER RBRACKET COMMA REGISTER terminate {
     fill(Codes::opcode[$1], Codes::mod["lmem"], Codes::reg[$6], Codes::reg[$3]);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 }
     | LD LBRACKET REGISTER OPERATOR INTEGER RBRACKET COMMA REGISTER terminate {
     fill(Codes::opcode[$1], Codes::mod["lmem"], Codes::reg[$8], Codes::reg[$3], 0, to_int($5));
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 }
     | LD LBRACKET REGISTER OPERATOR SYMBOL RBRACKET COMMA REGISTER terminate {
     symbol_table.new_occurrence($5, section->get_name(), section->line());
     fill(Codes::opcode[$1], Codes::mod["lmem"], Codes::reg[$8], Codes::reg[$3]);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 };
 
 st: ST REGISTER COMMA INTEGER terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], 0, 0, Codes::reg[$2], to_int($4));
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 }
     | ST REGISTER COMMA SYMBOL terminate {
     symbol_table.new_occurrence($4, section->get_name(), section->line());
     fill(Codes::opcode[$1], Codes::mod[$1], 0, 0, Codes::reg[$2]);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 }
     | ST REGISTER COMMA REGISTER terminate {
     fill(Codes::opcode["ld"], Codes::mod["lreg"], Codes::reg[$4], Codes::reg[$2]);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 }
     | ST REGISTER COMMA LBRACKET REGISTER RBRACKET terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$5], 0, Codes::reg[$2]);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 }
     | ST REGISTER COMMA LBRACKET REGISTER OPERATOR INTEGER RBRACKET terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$5], 0, Codes::reg[$2], to_int($7));
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 }
     | ST REGISTER COMMA LBRACKET REGISTER OPERATOR SYMBOL RBRACKET terminate {
     symbol_table.new_occurrence($7, section->get_name(), section->line());
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$5], 0, Codes::reg[$2]);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 };
 
 csrrd: CSRRD SYSREG COMMA REGISTER terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$2], Codes::reg[$4]);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 };
 
 csrwr: CSRWR REGISTER COMMA SYSREG terminate {
     fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$2], Codes::reg[$4]);
-    section->next() = Section::make_word(instruction);
+    section->next_word(Section::make_word(instruction));
 };
 
 %%

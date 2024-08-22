@@ -4,6 +4,7 @@
 #include "../inc/LinkerSection.hpp"
 #include "../inc/int_util.hpp"
 #include <iomanip>
+
 #define BREAK 8
 
 std::vector<std::string> LinkerSection::file_order;
@@ -116,7 +117,7 @@ LinkerSection::symbolize(const std::string &file, const std::string &section, in
 }
 
 void FinishedSection::symbolize(const std::string &file, int location, uint32 value, bool whole) {
-    location = location * 4 + this->subsections_start[file];
+    location = location + this->subsections_start[file];
     if (whole) {
         uint16 b0 = value & 0xFF, b1 = value & 0xFF00, b2 = value & 0xFF0000, b3 = value & 0xFF000000;
         this->bytes[location] = b0;
@@ -131,12 +132,20 @@ void FinishedSection::symbolize(const std::string &file, int location, uint32 va
     }
 }
 
+int LinkerSection::get_file_displacement(std::string &section, std::string filename) {
+    return finished_sections[section]->get_file_displacement(filename);
+}
 
-void LinkerSection::out_hex(std::ofstream &out) {
+int FinishedSection::get_file_displacement(std::string filename) {
+    return this->subsections_start[filename];
+}
+
+
+void LinkerSection::out_hex(std::ostream &out) {
     FinishedSection::out_hex(out);
 }
 
-void FinishedSection::out_hex(std::ofstream &out) {
+void FinishedSection::out_hex(std::ostream &out) {
     out << std::hex;
     for (auto &section_name: section_order) {
         FinishedSection *section = finished_sections[section_name];
@@ -147,3 +156,20 @@ void FinishedSection::out_hex(std::ofstream &out) {
         if (section->bytes.size() % BREAK != 0) out << '\n';
     }
 }
+
+void LinkerSection::out_obj(std::ostream &out) {
+    out << "sections " << finished_sections.size() << std::endl;
+    for (auto &section_name : section_order) {
+        finished_sections[section_name]->out_obj(out);
+    }
+}
+
+void FinishedSection::out_obj(std::ostream &out) {
+    int i = 0;
+    out << this->name << " " << this->bytes.size() << std::endl;
+    for (const uint32 word: this->bytes) {
+        std::bitset<8> binary(word);
+        out << binary.to_string() << (i++ % 4 == 3 ? "\n" : " ");
+    }
+}
+
