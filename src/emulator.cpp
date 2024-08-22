@@ -1,22 +1,49 @@
+#include <string>
+#include <iostream>
+#include <fstream>
+#include "../inc/reg.hpp"
+
 #define sp 14
 #define pc 15
 #define status 0
 #define handler 1
 #define cause 2
 
+
 int registers[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x40000000};
 
 int csr[3] = {};
 
-int MEM[0xFFFFFFFF] = {};
+uint8 MEM[0xFFFFFFFF] = {};
+
+using namespace std;
 
 void decode(char *op, char *mod, char *a, char *b, char *c, short *displacement);
+
+void read_from_file(string &filename) {
+    std::ifstream file("tests/" + filename);
+    if (!file.is_open()) {
+        cerr << "Unable to open file " + filename;
+        exit(0);
+    }
+
+    while (true) {
+        int address;
+        file >> address;
+        for (int i = 0; i < 8; i++) {
+            uint8 byte;
+            file >> byte;
+            MEM[address + i] = byte;
+        }
+    }
+}
 
 void emulate() {
     int temp;
     char op, mod, a, b, c;
     short displacement;
     decode(&op, &mod, &a, &b, &c, &displacement);
+    registers[0] = 0;
     switch (op) {
         case 0b0000:
             registers[0] = 0;
@@ -166,5 +193,6 @@ void emulate() {
 }
 
 int main() {
+
     emulate();
 }

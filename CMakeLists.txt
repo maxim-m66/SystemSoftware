@@ -12,8 +12,6 @@ add_executable(resenje
         src/codes.cpp
         inc/codes.hpp
         src/codes.cpp
-        src/table.cpp
-        inc/table.hpp
         src/symbol_table.cpp
         inc/symbol_table.hpp
         src/emulator.cpp
@@ -28,4 +26,5 @@ add_executable(resenje
         inc/LinkerSection.hpp
         src/int_util.cpp
         inc/int_util.hpp
+        src/reg.cpp
 )

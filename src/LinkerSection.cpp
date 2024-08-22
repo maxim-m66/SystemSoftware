@@ -2,8 +2,8 @@
 #include <bitset>
 #include <iostream>
 #include "../inc/LinkerSection.hpp"
-#include "../inc/int_util.hpp"
 #include <iomanip>
+#include <algorithm>
 
 #define BREAK 8
 
@@ -13,6 +13,7 @@ std::set<std::string> LinkerSection::section_set;
 std::unordered_map<std::string, OldSection *> LinkerSection::old_sections;
 std::unordered_map<std::string, FinishedSection *> LinkerSection::finished_sections;
 std::unordered_map<std::string, int> LinkerSection::start_positions;
+std::vector<LinkerSection::triplet> LinkerSection::overlaps;
 
 void OldSection::add_file(const std::string &file) {
     file_order.push_back(file);
@@ -39,12 +40,9 @@ unsigned int bin_to_int(const std::string &string) {
 
 OldSection::OldSection(std::ifstream &file, int lines) {
     for (int i = 0; i < lines; i++) {
-        std::string s0, s1, s2, s3;
-        file >> s0 >> s1 >> s2 >> s3;
+        std::string s0;
+        file >> s0;
         this->bytes.push_back(bin_to_int(s0));
-        this->bytes.push_back(bin_to_int(s1));
-        this->bytes.push_back(bin_to_int(s2));
-        this->bytes.push_back(bin_to_int(s3));
     }
 }
 
@@ -78,7 +76,17 @@ void LinkerSection::link() {
             }
             section->fill(current_file, old_sections[key]->get_bytes());
         }
+        overlaps.push_back({current_section, current_address, section->get_size(), false});
         current_address += section->get_size();
+    }
+    std::sort(overlaps.begin(), overlaps.end(), [](const triplet &a, const triplet &b) { return a.start < b.start; });
+    for (int i = 0; i < overlaps.size() - 1; i++) {
+        if (overlaps[i].start + overlaps[i].len == overlaps[i + 1].start) {
+            overlaps[i].continues = true;
+        } else if (overlaps[i].start + overlaps[i].len > overlaps[i + 1].start) {
+            std::cerr << "Sections overlap" << std::endl;
+            exit(0);
+        }
     }
 }
 
@@ -142,24 +150,35 @@ int FinishedSection::get_file_displacement(std::string filename) {
 
 
 void LinkerSection::out_hex(std::ostream &out) {
-    FinishedSection::out_hex(out);
+    out << std::hex;
+    bool continued = false;
+    for (auto &triplet: overlaps) {
+        FinishedSection *section = finished_sections[triplet.section];
+        section->out_hex(out, continued);
+        continued = triplet.continues;
+        if (!triplet.continues) {
+            if (section->where_next() % BREAK != 0)
+                for (int i = 0; i < BREAK - section->where_next() % BREAK; i++)
+                    out << "00" << (i == BREAK - section->where_next() % BREAK - 1 ? "\n" : " ");
+        }
+    }
 }
 
-void FinishedSection::out_hex(std::ostream &out) {
-    out << std::hex;
-    for (auto &section_name: section_order) {
-        FinishedSection *section = finished_sections[section_name];
-        for (int i = 0, location = section->start_address; i < section->bytes.size(); i++, location++) {
-            if (i % BREAK == 0) out << std::setw(4) << std::setfill('0') << location << ": ";
-            out << std::setw(2) << std::setfill('0') << (uint16) section->bytes[i] << ((i % BREAK == 7) ? "\n" : " ");
-        }
-        if (section->bytes.size() % BREAK != 0) out << '\n';
+void FinishedSection::out_hex(std::ostream &out, bool continued) {
+    int location = this->start_address;
+    if (not continued && location % BREAK != 0) {
+        out << std::setw(4) << std::setfill('0') << (location / BREAK) * BREAK << ": ";
+        for (int i = 0; i < location % BREAK; i++) out << "00 ";
+    }
+    for (int i = 0; i < this->bytes.size(); i++, location++) {
+        if (location % BREAK == 0) out << std::setw(4) << std::setfill('0') << location << ": ";
+        out << std::setw(2) << std::setfill('0') << (uint16) this->bytes[i] << ((location % BREAK == 7) ? "\n" : " ");
     }
 }
 
 void LinkerSection::out_obj(std::ostream &out) {
     out << "sections " << finished_sections.size() << std::endl;
-    for (auto &section_name : section_order) {
+    for (auto &section_name: section_order) {
         finished_sections[section_name]->out_obj(out);
     }
 }

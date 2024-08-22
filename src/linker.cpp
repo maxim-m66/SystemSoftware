@@ -1,9 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "../inc/LSymTable.hpp"
-#include "../inc/binding.hpp"
 #include "../inc/LinkerSection.hpp"
-#include "../inc/int_util.hpp"
 
 #define EQ 6
 
@@ -39,7 +37,7 @@ std::string read_file(const std::string &filename) {
     if (header != "sections") return "No sections in file " + filename;
     for (int i = 0; i < elements; i++) {
         file >> name >> lines;
-        OldSection::add_section(filename, file, name, lines / 4);
+        OldSection::add_section(filename, file, name, lines);
     }
     return "";
 }
@@ -55,7 +53,7 @@ int main(int argc, char **argv) {
         if (input == "-o") {
             output_filename = argv[++i];
             continue;
-        } else if (input[EQ] == '=') {
+        } else if (input.size() >= EQ and input[EQ] == '=') {
             int at = input.find('@');
             int position = to_int(input.substr(at + 1));
             LinkerSection::add_start_position(input.substr(EQ + 1, at - EQ - 1), position);

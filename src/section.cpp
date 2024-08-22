@@ -103,7 +103,7 @@ std::ostream &operator<<(std::ostream &out, const Section &section) {
     int i = 0;
     for (const uint32 word: section.bytes) {
         std::bitset<8> binary(word);
-        out << binary.to_string() << (i++ % 4 == 3 ? "\n" : " ");
+        out << binary.to_string() << "\n"; //(i++ % 4 == 3 ? "\n" : " ");
     }
     return out;
 }

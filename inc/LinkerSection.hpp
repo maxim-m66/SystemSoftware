@@ -39,6 +39,13 @@ public:
     static void out_obj(std::ostream &out);
 
 protected:
+    struct triplet {
+        std::string section;
+        int start;
+        int len;
+        bool continues;
+    };
+    static std::vector<triplet> overlaps;
     static std::vector<std::string> file_order;
     static std::vector<std::string> section_order;
     static std::set<std::string> section_set;
@@ -76,11 +83,13 @@ public:
 
     int get_size() const { return length; }
 
+    int where_next() const {return start_address + length;}
+
     static void print();
 
     void symbolize(const std::string &file, int location, uint32 value, bool whole);
 
-    static void out_hex(std::ostream &out);
+    void out_hex(std::ostream &out, bool continued);
 
     void out_obj(std::ostream &out);
 
