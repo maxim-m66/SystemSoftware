@@ -14,9 +14,6 @@ int fileline = 0;
 bool was_error = false;
 
 int main(int argc, char **argv) {
-    for (int i = 1200131; i < 1200131 + 64; i ++) {
-        std::cout << ".word " << i << endl;
-    }
 
     string input_filename, output_filename;
 
