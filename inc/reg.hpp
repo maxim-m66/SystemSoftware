@@ -3,54 +3,24 @@
 
 #include "../inc/int_util.hpp"
 
-class reg {
+
+class Memory {
 public:
-    explicit reg(int value) : value(value) {}
+    static Memory &get();
 
-    virtual reg &operator=(const reg &right);
+    int operator[](uint32 address);
 
-    virtual reg &operator=(int value);
+    void set(uint32 address, uint32 value);
 
-    bool operator==(const reg &right);
+    void load(std::istream &in);
 
-    bool operator==(int value);
-
-    bool operator>(const reg &right);
-
-    bool operator>(int value);
-
-    bool operator!=(const reg &right) {
-        return not(*this == right);
-    }
-
-    bool operator!=(int value) {
-        return !(*this == value);
-    }
-
-    int get_value() { return this->value; }
-
-protected:
-    int value;
-};
-
-class reg0 : public reg {
-public:
-    reg0() : reg(0) {}
-
-    reg0 &operator=(const reg &right) override;
-
-    reg0 &operator=(const int value) override;
-};
-
-class register_file {
-public:
-    register_file(bool system);
-
-    reg &operator[](int i);
+    void decode(uint32 address, uint8 *op, uint8 *mod, uint8 *ra, uint8 *rb, uint8 *rc, short *displacement);
 
 private:
-    reg **registers;
-    int len;
+    Memory();
+
+    static Memory *MEM;
+    uint8 *data;
 };
 
 #endif //RESENJE_REG_HPP

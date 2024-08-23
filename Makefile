@@ -46,7 +46,7 @@ parser: $(PARSER_IN)
 	$(PARSE) $(PARSE_FLAGS) $(PARSER_IN)
 	mv src/*.hpp inc/
 
-emulator:
+emulator: cleanemulator
 	$(COMPILE) $(EMULATOR_FLAGS) $(EMULATOR_IN)
 
 runemu:
@@ -59,14 +59,25 @@ runlinker: linker
 	./$(LINKER_OUT) -o out1.hex test1.o test2.o -place=bss@0x201 -place=txt@0x400 -hex
 
 clean:
-	rm -f $(LEXER_OUT) $(LEXER_HEADER) $(PARSER_OUT) $(PARSER_HEADER) $(ASEMBLER_OUT) $(LINKER_OUT) tests/*.o tests/*.hex
+	rm -f $(LEXER_OUT) $(LEXER_HEADER) $(PARSER_OUT) $(PARSER_HEADER) $(ASEMBLER_OUT) $(LINKER_OUT) $(EMULATOR_OUT) tests/*.o tests/*.hex
 
 cleanlinker:
 	rm -f $(LINKER_OUT)
+
+cleanemulator:
+	rm -f $(EMULATOR_OUT)
+
+FILENAME = test1
+
+toolchain:
+	./$(ASEMBLER_OUT) tests/$(FILENAME).s
+	./$(LINKER_OUT) -o $(FILENAME).hex $(FILENAME).o -hex
+	./$(EMULATOR_OUT) $(FILENAME).hex
+
 
 git: clean
 	git add .
 	git commit -m "${MSG}"
 	git push -u origin master
 
-.PHONY: all clean asembler run lexer parser linker runlinker cleanlinker justlink
+.PHONY: all clean asembler run lexer parser linker runlinker cleanlinker justlink cleanemulator

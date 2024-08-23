@@ -35,7 +35,7 @@ std::unordered_map<std::string, uint8> Codes::opcode = {
 
 std::unordered_map<std::string, uint8> Codes::mod{
         {"iret",      0b0111},
-        {"call",      0b0000},
+        {"call",      0b0001},
         {"ret",       0b0011},
         {"jmp",       0b1000},
         {"beq",       0b1001},

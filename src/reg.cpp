@@ -1,50 +1,58 @@
 #include <iostream>
+#include <iomanip>
 #include "../inc/reg.hpp"
 
-reg &reg::operator=(const reg &right) {
-    this->value = right.value;
-    return *this;
+Memory *Memory::MEM = nullptr;
+
+Memory::Memory() {
+    this->data = new uint8[0xFFFFFFFF];
 }
 
-reg &reg::operator=(int value) {
-    this->value = value;
-    return *this;
+int Memory::operator[](uint32 address) {
+    int ret = 0;
+    for (int i = 0; i < 4; i++) {
+        uint32 byte = this->data[address + i];
+        ret |= (byte << (i*8));
+    }
+    return ret;
 }
 
-bool reg::operator==(const reg &right) {
-    return this->value == right.value;
-}
-
-bool reg::operator==(int value) {
-    return this->value == value;
-}
-
-bool reg::operator>(const reg &right) {
-    return this->value > right.value;
-}
-
-bool reg::operator>(int value) {
-    return this->value > value;
-}
-
-reg0 &reg0::operator=(const reg &right) {
-    return *this;
-}
-
-reg0 &reg0::operator=(const int value) {
-    return *this;
-}
-
-register_file::register_file(bool system) : len(system ? 3 : 16) {
-    registers = new reg *[len];
-    registers[0] = (system ? new reg(0) : new reg0());
-    for (int i = 1; i < len; i++) {
-        registers[i] = new reg(0);
+void Memory::load(std::istream &in) {
+    in >> std::hex;
+    int address;
+    uint16 byte;
+    std::string junk;
+    while (in >> address >> junk) {
+        for (int i = 0; i < 8; i++) {
+            in >> byte;
+            this->data[address + i] = byte;
+        }
     }
 }
 
-reg &register_file::operator[](int i) {
-    if (i < 0 or i >= len)
-        std::cerr << "Register out of bounds" << std::endl;
-    return *registers[i];
+void Memory::decode(uint32 address, uint8 *op, uint8 *mod, uint8 *ra, uint8 *rb, uint8 *rc, short *displacement) {
+    *op = (this->data[address] & 0xF0) >> 4;
+    *mod = this->data[address] & 0xF;
+    *ra = (this->data[address + 1] & 0xF0) >> 4;
+    *rb = this->data[address + 1] & 0xF;
+    *rc = (this->data[address + 2] & 0xF0) >> 4;
+    *displacement = ((short)(this->data[address + 2] & 0xF) << 8) | this->data[address + 3];
+}
+
+void Memory::set(uint32 address, uint32 value) {
+    uint8 b0 = value & 0xFF;
+    uint8 b1 = (value & 0xFF00) >> 8;
+    uint8 b2 = (value & 0xFF0000) >> 16;
+    uint8 b3 = (value & 0xFF000000) >> 24;
+    this->data[address] = b0;
+    this->data[address + 1] = b1;
+    this->data[address + 2] = b2;
+    this->data[address + 3] = b3;
+}
+
+Memory &Memory::get() {
+    if (MEM == nullptr) {
+        MEM = new Memory();
+    }
+    return *MEM;
 }

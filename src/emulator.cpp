@@ -1,6 +1,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include "../inc/reg.hpp"
 
 #define sp 14
@@ -9,50 +10,32 @@
 #define handler 1
 #define cause 2
 
-
-int registers[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x40000000};
+int registers[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x1000000, 0000000};
 
 int csr[3] = {};
 
-uint8 MEM[0xFFFFFFFF] = {};
+bool emulation = true;
+
+Memory &MEM = Memory::get();
 
 using namespace std;
 
-void decode(char *op, char *mod, char *a, char *b, char *c, short *displacement);
-
-void read_from_file(string &filename) {
-    std::ifstream file("tests/" + filename);
-    if (!file.is_open()) {
-        cerr << "Unable to open file " + filename;
-        exit(0);
-    }
-
-    while (true) {
-        int address;
-        file >> address;
-        for (int i = 0; i < 8; i++) {
-            uint8 byte;
-            file >> byte;
-            MEM[address + i] = byte;
-        }
-    }
-}
-
 void emulate() {
     int temp;
-    char op, mod, a, b, c;
+    uint8 op, mod, a, b, c;
     short displacement;
-    decode(&op, &mod, &a, &b, &c, &displacement);
+    MEM.decode(registers[pc], &op, &mod, &a, &b, &c, &displacement);
+    registers[pc] += 4;
     registers[0] = 0;
     switch (op) {
         case 0b0000:
-            registers[0] = 0;
+            emulation = false;
             return;
         case 0b0001:
             registers[sp]--;
-            MEM[sp] = csr[status];
+            MEM.set(registers[sp], csr[status]);
             registers[sp]--;
-            MEM[sp] = registers[pc];
+            MEM.set(registers[sp], registers[pc]);
             csr[cause] = 4;
             csr[status] = csr[status] & ~1;
             registers[pc] = csr[handler];
@@ -61,12 +44,12 @@ void emulate() {
             switch (mod) {
                 case 0b0000:
                     registers[sp]--;
-                    MEM[sp] = registers[pc];
+                    MEM.set(registers[sp], registers[pc]);
                     registers[pc] = registers[a] + registers[b] + displacement;
                     break;
                 case 0b0001:
                     registers[sp]--;
-                    MEM[sp] = registers[pc];
+                    MEM.set(registers[sp], registers[pc]);
                     registers[pc] = MEM[registers[a] + registers[b] + displacement];
                     break;
             }
@@ -148,14 +131,14 @@ void emulate() {
         case 0b1000:
             switch (mod) {
                 case 0b0000:
-                    MEM[registers[a] + registers[b] + displacement] = registers[c];
+                    MEM.set(registers[a] + registers[b] + displacement, registers[c]);
                     break;
                 case 0b0010:
-                    MEM[MEM[registers[a] + registers[b] + displacement]] = registers[c];
+                    MEM.set(MEM[registers[a] + registers[b] + displacement], registers[c]);
                     break;
                 case 00001:
                     registers[a] = registers[a] + displacement;
-                    MEM[registers[a]] = registers[c];
+                    MEM.set(registers[a], registers[c]);
                     break;
             }
             break;
@@ -192,7 +175,27 @@ void emulate() {
     }
 }
 
-int main() {
+int main(int argc, char **argv) {
+    if (argc != 2) {
+        cerr << "Invalid number of aruments provided";
+        exit(0);
+    }
 
-    emulate();
+    ifstream in("tests/" + string(argv[1]));
+    if (!in.is_open()) {
+        cerr << "Unable to open file " + string(argv[1]);
+        exit(0);
+    }
+
+    MEM.load(in);
+
+    while (emulation) emulate();
+    cout << "Emulated processor executed halt instruction" << endl;
+    cout << "Emulated processor state" << endl;
+    for (int i = 0; i < 16; i++) {
+        cout << setw(3) << setfill(' ') << "r" + to_string(i) << "=0x";
+        cout << setw(8) << setfill('0') << hex << registers[i];
+        if (i % 4 == 3) cout << endl;
+        else cout << "   ";
+    }
 }
