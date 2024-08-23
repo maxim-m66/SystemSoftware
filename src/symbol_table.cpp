@@ -6,6 +6,7 @@
 #include <ostream>
 
 SymbolTable* SymbolTable::table = nullptr;
+std::unordered_map<std::string, std::vector<int>> SymbolTable::multiple_defs;
 
 void SymbolTable::insert_symbol(const std::string& symbol) {
     if (this->has_symbol(symbol)) return;
@@ -34,6 +35,7 @@ void SymbolTable::symbolise() {
 }
 
 std::ostream& operator<<(std::ostream& out, const SymbolTable& table) {
+    std::vector<std::string> undefined;
     out << "symbols " << table.symbols.size() << std::endl;
     for (auto& pair : table.symbols) {
         int linking;
@@ -45,12 +47,43 @@ std::ostream& operator<<(std::ostream& out, const SymbolTable& table) {
             linking = LOCAL_SYMBOL;
         }
         out << pair.first << " " << linking << " " << pair.second->occurences.size() << std::endl;
-        if (linking != 0) {
+        if (linking != EXTERN_SYMBOL) {
+            if (pair.second->value == -1) undefined.push_back(pair.first);
             out << pair.second->section << " " << pair.second->value << std::endl;
         }
         for (auto& sectionline : pair.second->occurences) {
             out << sectionline.section << " " << sectionline.line << " " << sectionline.whole << std::endl;
         }
     }
+    if (!undefined.empty()) {
+        std::cerr << "Undefined symbols:\n";
+        for (auto &symbol : undefined) {
+            std::cerr << symbol << std::endl;
+        }
+    }
     return out;
+}
+
+void SymbolTable::new_def(const std::string &name, int asm_line) {
+    if (table->has_symbol(name)) {
+        multiple_defs[name].push_back(asm_line);
+    } else {
+        table->insert_symbol(name);
+        multiple_defs[name] = *(new std::vector<int>{asm_line});
+    }
+}
+
+void SymbolTable::check_multiple_defs() {
+    bool error = false;
+    for (auto & pair : multiple_defs) {
+        if (pair.second.size() > 1) {
+            error = true;
+            std::cerr << "Multiple defintions of symbol " << pair.first << " on lines:";
+            for (int line : pair.second) {
+                std::cerr << " " << line;
+            }
+            std::cerr << std::endl;
+        }
+    }
+    if (error) exit(0);
 }

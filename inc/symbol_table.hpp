@@ -37,6 +37,10 @@ public:
 
     static void symbolise();
 
+    static void new_def(const std::string &name, int asm_line);
+
+    static void check_multiple_defs();
+
 protected:
     explicit SymbolTable() {}
 
@@ -50,6 +54,7 @@ private:
     std::set<std::string> _extern;
     std::set<std::string> _global;
     static SymbolTable* table;
+    static std::unordered_map<std::string, std::vector<int>> multiple_defs;
 };
 
 #endif //SYMBOL_TABLE_HPP

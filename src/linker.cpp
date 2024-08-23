@@ -39,6 +39,7 @@ std::string read_file(const std::string &filename) {
         file >> name >> lines;
         OldSection::add_section(filename, file, name, lines);
     }
+    file.close();
     return "";
 }
 
@@ -92,4 +93,5 @@ int main(int argc, char **argv) {
         LSymTable::out_obj(output);
         LinkerSection::out_obj(output);
     }
+    output.close();
 }

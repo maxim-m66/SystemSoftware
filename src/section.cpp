@@ -100,10 +100,9 @@ void Section::flush(std::ostream &out) {
 }
 
 std::ostream &operator<<(std::ostream &out, const Section &section) {
-    int i = 0;
     for (const uint32 word: section.bytes) {
         std::bitset<8> binary(word);
-        out << binary.to_string() << "\n"; //(i++ % 4 == 3 ? "\n" : " ");
+        out << binary.to_string() << "\n";
     }
     return out;
 }
@@ -120,5 +119,19 @@ void Section::set_jumps() {
             }
             section->symbolise(jump.line, (section->line() - jump.line - 8));
         }
+    }
+}
+
+int Section::number() {
+    return (txt_called == 1 and get_section("txt")->byte_count == 0) ? sections.size() - 1 : sections.size();
+}
+
+void Section::out_obj(std::ostream &out) {
+    std::vector<Section *> &sctns = Section::get_sections();
+    out << "sections " << Section::number() << std::endl;
+    for (auto &section: sctns) {
+        if (txt_called == 1 and section->name == "txt" and section->byte_count == 0) continue;
+        out << section->get_name() << " " << section->line() << std::endl;
+        out << *section;
     }
 }

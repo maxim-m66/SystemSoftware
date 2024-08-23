@@ -10,7 +10,14 @@
 
 using namespace std;
 
+int fileline = 0;
+bool was_error = false;
+
 int main(int argc, char **argv) {
+    for (int i = 1200131; i < 1200131 + 64; i ++) {
+        std::cout << ".word " << i << endl;
+    }
+
     string input_filename, output_filename;
 
     if (argc != 2 && argc != 4) return 0;
@@ -39,20 +46,23 @@ int main(int argc, char **argv) {
         string line;
         getline(input, line);
         yy_scan_string(line.c_str());
-        if (yyparse()) break;
+        fileline++;
+        int ret = yyparse();
+        if (was_error) {
+            was_error = false;
+            continue;
+        } else if (ret) {
+            break;
+        }
     }
     input.close();
+
+    SymbolTable::check_multiple_defs();
     Section::set_jumps();
+
     ofstream output;
     output.open(output_filename, ios::out);
-    set<string> non_local;
     SymbolTable &symbol_table = SymbolTable::get_table();
     output << symbol_table;
-    std::vector<Section *> &sections = Section::get_sections();
-    output << "sections " << sections.size() << endl;
-    for (auto &section: sections) {
-        if (section->get_name() == ".strtab") continue;
-        output << section->get_name() << " " << section->line() << endl;
-        output << *section;
-    }
+    Section::out_obj(output);
 }

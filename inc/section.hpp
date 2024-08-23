@@ -33,6 +33,10 @@ public:
 
     static void flush(std::ostream &out);
 
+    static int number();
+
+    static void out_obj(std::ostream &out);
+
     void new_jump( int value, const std::string &symbol) {
         this->jumps.push_back({this->byte_count, value, symbol});
     }

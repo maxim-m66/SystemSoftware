@@ -20,6 +20,10 @@ struct pair {
     std::string symbol;
 };
 
+extern int fileline;
+
+extern bool was_error;
+
 std::vector<pair> symbols;
 
 uint8 instruction[8] = {};
@@ -52,7 +56,7 @@ std::string to_my_string(std::string);
 
 %%
 
-line: label | instruction | label instruction | directive | terminate;
+line: label | instruction | label instruction | directive | label directive | terminate;
 
 instruction: inone | ret | iret | jump | branch | push | pop | alo | xchg | not | ld | st | csrrd | csrwr;
 
@@ -130,12 +134,7 @@ skip: SKIP INTEGER terminate {
 }
 
 label: SYMBOL LABEL terminate {
-    if (!symbol_table.has_symbol($1)) {
-        symbol_table.insert_symbol($1);
-    }
-    if (symbol_table.has_value($1)) {
-        throw "Symbol already defined";
-    }
+    symbol_table.new_def($1, fileline);
     symbol_table.value($1) = section->line();
     symbol_table.section($1) = section->get_name();
 };
@@ -288,7 +287,8 @@ csrwr: CSRWR REGISTER COMMA SYSREG terminate {
 %%
 
 void yyerror(const char *s) {
-    fprintf(stderr, "error: %s", s);
+    was_error = true;
+    fprintf(stderr, "%s on line %d\n", s, fileline);
 }
 
 void fill(uint8 opcode, uint8 mod, uint8 a, uint8 b, uint8 c, int displacement) {

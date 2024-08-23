@@ -188,7 +188,7 @@ void FinishedSection::out_obj(std::ostream &out) {
     out << this->name << " " << this->bytes.size() << std::endl;
     for (const uint32 word: this->bytes) {
         std::bitset<8> binary(word);
-        out << binary.to_string() << (i++ % 4 == 3 ? "\n" : " ");
+        out << binary.to_string() << "\n";
     }
 }
 
