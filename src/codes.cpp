@@ -61,10 +61,11 @@ std::unordered_map<std::string, uint8> Codes::mod{
         {"pop",       0b0011},
         {"ret",       0b0011},
         {"iret",      0b0011},
-        {"limmed",    0b0001},
+        {"limmed",    0b0010},
         {"lreg",      0b0001},
         {"lmem",      0b0010},
-        {"st",        0b0000}
+        {"st",        0b0000},
+        {"stdir",     0b0010}
 };
 
 std::unordered_map<std::string, uint8> Codes::reg{

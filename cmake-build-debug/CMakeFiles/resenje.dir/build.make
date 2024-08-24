@@ -167,24 +167,10 @@ CMakeFiles/resenje.dir/src/emulator.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/resenje.dir/src/emulator.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/os/CLionProjects/SystemSoftware/src/emulator.cpp -o CMakeFiles/resenje.dir/src/emulator.cpp.s
 
-CMakeFiles/resenje.dir/src/elf.cpp.o: CMakeFiles/resenje.dir/flags.make
-CMakeFiles/resenje.dir/src/elf.cpp.o: /home/os/CLionProjects/SystemSoftware/src/elf.cpp
-CMakeFiles/resenje.dir/src/elf.cpp.o: CMakeFiles/resenje.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/resenje.dir/src/elf.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/resenje.dir/src/elf.cpp.o -MF CMakeFiles/resenje.dir/src/elf.cpp.o.d -o CMakeFiles/resenje.dir/src/elf.cpp.o -c /home/os/CLionProjects/SystemSoftware/src/elf.cpp
-
-CMakeFiles/resenje.dir/src/elf.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/resenje.dir/src/elf.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/os/CLionProjects/SystemSoftware/src/elf.cpp > CMakeFiles/resenje.dir/src/elf.cpp.i
-
-CMakeFiles/resenje.dir/src/elf.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/resenje.dir/src/elf.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/os/CLionProjects/SystemSoftware/src/elf.cpp -o CMakeFiles/resenje.dir/src/elf.cpp.s
-
 CMakeFiles/resenje.dir/src/linker.cpp.o: CMakeFiles/resenje.dir/flags.make
 CMakeFiles/resenje.dir/src/linker.cpp.o: /home/os/CLionProjects/SystemSoftware/src/linker.cpp
 CMakeFiles/resenje.dir/src/linker.cpp.o: CMakeFiles/resenje.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/resenje.dir/src/linker.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/resenje.dir/src/linker.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/resenje.dir/src/linker.cpp.o -MF CMakeFiles/resenje.dir/src/linker.cpp.o.d -o CMakeFiles/resenje.dir/src/linker.cpp.o -c /home/os/CLionProjects/SystemSoftware/src/linker.cpp
 
 CMakeFiles/resenje.dir/src/linker.cpp.i: cmake_force
@@ -198,7 +184,7 @@ CMakeFiles/resenje.dir/src/linker.cpp.s: cmake_force
 CMakeFiles/resenje.dir/src/LSymTable.cpp.o: CMakeFiles/resenje.dir/flags.make
 CMakeFiles/resenje.dir/src/LSymTable.cpp.o: /home/os/CLionProjects/SystemSoftware/src/LSymTable.cpp
 CMakeFiles/resenje.dir/src/LSymTable.cpp.o: CMakeFiles/resenje.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/resenje.dir/src/LSymTable.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/resenje.dir/src/LSymTable.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/resenje.dir/src/LSymTable.cpp.o -MF CMakeFiles/resenje.dir/src/LSymTable.cpp.o.d -o CMakeFiles/resenje.dir/src/LSymTable.cpp.o -c /home/os/CLionProjects/SystemSoftware/src/LSymTable.cpp
 
 CMakeFiles/resenje.dir/src/LSymTable.cpp.i: cmake_force
@@ -212,7 +198,7 @@ CMakeFiles/resenje.dir/src/LSymTable.cpp.s: cmake_force
 CMakeFiles/resenje.dir/src/LinkerSection.cpp.o: CMakeFiles/resenje.dir/flags.make
 CMakeFiles/resenje.dir/src/LinkerSection.cpp.o: /home/os/CLionProjects/SystemSoftware/src/LinkerSection.cpp
 CMakeFiles/resenje.dir/src/LinkerSection.cpp.o: CMakeFiles/resenje.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/resenje.dir/src/LinkerSection.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/resenje.dir/src/LinkerSection.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/resenje.dir/src/LinkerSection.cpp.o -MF CMakeFiles/resenje.dir/src/LinkerSection.cpp.o.d -o CMakeFiles/resenje.dir/src/LinkerSection.cpp.o -c /home/os/CLionProjects/SystemSoftware/src/LinkerSection.cpp
 
 CMakeFiles/resenje.dir/src/LinkerSection.cpp.i: cmake_force
@@ -226,7 +212,7 @@ CMakeFiles/resenje.dir/src/LinkerSection.cpp.s: cmake_force
 CMakeFiles/resenje.dir/src/int_util.cpp.o: CMakeFiles/resenje.dir/flags.make
 CMakeFiles/resenje.dir/src/int_util.cpp.o: /home/os/CLionProjects/SystemSoftware/src/int_util.cpp
 CMakeFiles/resenje.dir/src/int_util.cpp.o: CMakeFiles/resenje.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/resenje.dir/src/int_util.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/resenje.dir/src/int_util.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/resenje.dir/src/int_util.cpp.o -MF CMakeFiles/resenje.dir/src/int_util.cpp.o.d -o CMakeFiles/resenje.dir/src/int_util.cpp.o -c /home/os/CLionProjects/SystemSoftware/src/int_util.cpp
 
 CMakeFiles/resenje.dir/src/int_util.cpp.i: cmake_force
@@ -240,7 +226,7 @@ CMakeFiles/resenje.dir/src/int_util.cpp.s: cmake_force
 CMakeFiles/resenje.dir/src/reg.cpp.o: CMakeFiles/resenje.dir/flags.make
 CMakeFiles/resenje.dir/src/reg.cpp.o: /home/os/CLionProjects/SystemSoftware/src/reg.cpp
 CMakeFiles/resenje.dir/src/reg.cpp.o: CMakeFiles/resenje.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/resenje.dir/src/reg.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/resenje.dir/src/reg.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/resenje.dir/src/reg.cpp.o -MF CMakeFiles/resenje.dir/src/reg.cpp.o.d -o CMakeFiles/resenje.dir/src/reg.cpp.o -c /home/os/CLionProjects/SystemSoftware/src/reg.cpp
 
 CMakeFiles/resenje.dir/src/reg.cpp.i: cmake_force
@@ -260,7 +246,6 @@ resenje_OBJECTS = \
 "CMakeFiles/resenje.dir/src/codes.cpp.o" \
 "CMakeFiles/resenje.dir/src/symbol_table.cpp.o" \
 "CMakeFiles/resenje.dir/src/emulator.cpp.o" \
-"CMakeFiles/resenje.dir/src/elf.cpp.o" \
 "CMakeFiles/resenje.dir/src/linker.cpp.o" \
 "CMakeFiles/resenje.dir/src/LSymTable.cpp.o" \
 "CMakeFiles/resenje.dir/src/LinkerSection.cpp.o" \
@@ -277,7 +262,6 @@ resenje: CMakeFiles/resenje.dir/src/section.cpp.o
 resenje: CMakeFiles/resenje.dir/src/codes.cpp.o
 resenje: CMakeFiles/resenje.dir/src/symbol_table.cpp.o
 resenje: CMakeFiles/resenje.dir/src/emulator.cpp.o
-resenje: CMakeFiles/resenje.dir/src/elf.cpp.o
 resenje: CMakeFiles/resenje.dir/src/linker.cpp.o
 resenje: CMakeFiles/resenje.dir/src/LSymTable.cpp.o
 resenje: CMakeFiles/resenje.dir/src/LinkerSection.cpp.o
@@ -285,7 +269,7 @@ resenje: CMakeFiles/resenje.dir/src/int_util.cpp.o
 resenje: CMakeFiles/resenje.dir/src/reg.cpp.o
 resenje: CMakeFiles/resenje.dir/build.make
 resenje: CMakeFiles/resenje.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Linking CXX executable resenje"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable resenje"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/resenje.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

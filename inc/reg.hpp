@@ -1,6 +1,10 @@
 #ifndef RESENJE_REG_HPP
 #define RESENJE_REG_HPP
 
+#define TERM_OUT 0xFFFFFF00
+#define TERM_IN 0xFFFFFF04
+#define TIM_CFG 0xFFFFFF10
+
 #include "../inc/int_util.hpp"
 
 

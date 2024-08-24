@@ -1,3 +1,4 @@
 /home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles/resenje.dir
+/home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles/emulator.dir
 /home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles/edit_cache.dir
 /home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles/rebuild_cache.dir

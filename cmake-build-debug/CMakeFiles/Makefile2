@@ -64,6 +64,7 @@ CMAKE_BINARY_DIR = /home/os/CLionProjects/SystemSoftware/cmake-build-debug
 
 # The main recursive "all" target.
 all: CMakeFiles/resenje.dir/all
+all: CMakeFiles/emulator.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -72,6 +73,7 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/resenje.dir/clean
+clean: CMakeFiles/emulator.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -81,12 +83,12 @@ clean: CMakeFiles/resenje.dir/clean
 CMakeFiles/resenje.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14 "Built target resenje"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles --progress-num=4,5,6,7,8,9,10,11,12,13,14,15,16 "Built target resenje"
 .PHONY : CMakeFiles/resenje.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/resenje.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles 14
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles 13
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/resenje.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/resenje.dir/rule
@@ -99,6 +101,32 @@ resenje: CMakeFiles/resenje.dir/rule
 CMakeFiles/resenje.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/clean
 .PHONY : CMakeFiles/resenje.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/emulator.dir
+
+# All Build rule for target.
+CMakeFiles/emulator.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/emulator.dir/build.make CMakeFiles/emulator.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/emulator.dir/build.make CMakeFiles/emulator.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles --progress-num=1,2,3 "Built target emulator"
+.PHONY : CMakeFiles/emulator.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/emulator.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles 3
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/emulator.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/os/CLionProjects/SystemSoftware/cmake-build-debug/CMakeFiles 0
+.PHONY : CMakeFiles/emulator.dir/rule
+
+# Convenience name for target.
+emulator: CMakeFiles/emulator.dir/rule
+.PHONY : emulator
+
+# clean rule for target.
+CMakeFiles/emulator.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/emulator.dir/build.make CMakeFiles/emulator.dir/clean
+.PHONY : CMakeFiles/emulator.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

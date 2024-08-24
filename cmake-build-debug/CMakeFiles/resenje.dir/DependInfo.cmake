@@ -12,7 +12,6 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/os/CLionProjects/SystemSoftware/src/LinkerSection.cpp" "CMakeFiles/resenje.dir/src/LinkerSection.cpp.o" "gcc" "CMakeFiles/resenje.dir/src/LinkerSection.cpp.o.d"
   "/home/os/CLionProjects/SystemSoftware/src/asembler.cpp" "CMakeFiles/resenje.dir/src/asembler.cpp.o" "gcc" "CMakeFiles/resenje.dir/src/asembler.cpp.o.d"
   "/home/os/CLionProjects/SystemSoftware/src/codes.cpp" "CMakeFiles/resenje.dir/src/codes.cpp.o" "gcc" "CMakeFiles/resenje.dir/src/codes.cpp.o.d"
-  "/home/os/CLionProjects/SystemSoftware/src/elf.cpp" "CMakeFiles/resenje.dir/src/elf.cpp.o" "gcc" "CMakeFiles/resenje.dir/src/elf.cpp.o.d"
   "/home/os/CLionProjects/SystemSoftware/src/emulator.cpp" "CMakeFiles/resenje.dir/src/emulator.cpp.o" "gcc" "CMakeFiles/resenje.dir/src/emulator.cpp.o.d"
   "/home/os/CLionProjects/SystemSoftware/src/int_util.cpp" "CMakeFiles/resenje.dir/src/int_util.cpp.o" "gcc" "CMakeFiles/resenje.dir/src/int_util.cpp.o.d"
   "/home/os/CLionProjects/SystemSoftware/src/lexer.cpp" "CMakeFiles/resenje.dir/src/lexer.cpp.o" "gcc" "CMakeFiles/resenje.dir/src/lexer.cpp.o.d"

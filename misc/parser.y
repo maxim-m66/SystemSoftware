@@ -28,10 +28,6 @@ std::vector<pair> symbols;
 
 uint8 instruction[8] = {};
 
-int to_int(const char *);
-
-int to_int(std::string s);
-
 void fill(uint8 opcode, uint8 mod = 0, uint8 a = 0, uint8 b = 0, uint8 c = 0, int displacement = 0);
 
 void displacement(uint8* instruction, int displacement);
@@ -159,9 +155,9 @@ ret: RET terminate {
 };
 
 iret: IRET terminate {
-    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg["%status"], Codes::reg["%sp"], 0, 1);
+    fill(Codes::opcode["pop"], Codes::mod[$1], Codes::reg["%status"], Codes::reg["%sp"], 0, 4);
     section->next_word(Section::make_word(instruction));
-    fill(Codes::opcode["ret"], Codes::mod["ret"], Codes::reg["%pc"], Codes::reg["%sp"], 0, 1);
+    fill(Codes::opcode["ret"], Codes::mod["ret"], Codes::reg["%pc"], Codes::reg["%sp"], 0, 4);
     section->next_word(Section::make_word(instruction));
 };
 
@@ -187,12 +183,12 @@ branch: BRANCH REGISTER COMMA REGISTER COMMA SYMBOL terminate {
 };
 
 push: PUSH REGISTER terminate {
-    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg["%sp"], 0, Codes::reg[$2], -1);
+    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg["%sp"], 0, Codes::reg[$2], -4);
     section->next_word(Section::make_word(instruction));
 };
 
 pop: POP REGISTER terminate {
-    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$2], Codes::reg["%sp"], 0, 1);
+    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$2], Codes::reg["%sp"], 0, 4);
     section->next_word(Section::make_word(instruction));
 };
 
@@ -212,21 +208,45 @@ not: NOT REGISTER {
 };
 
 ld: LD IMMED INTEGER COMMA REGISTER terminate {
-    fill(Codes::opcode[$1], Codes::mod["limmed"], Codes::reg[$5], 0, 0, to_int($3));
+    section->new_jump(to_int($3), "");
+    fill(Codes::opcode[$1], Codes::mod["limmed"], Codes::reg[$5], 15);
     section->next_word(Section::make_word(instruction));
 }
     | LD IMMED SYMBOL COMMA REGISTER terminate {
-    symbol_table.new_occurrence($3, section->get_name(), section->line());
-    fill(Codes::opcode[$1], Codes::mod["limmed"], Codes::reg[$5]);
+    section->new_jump(-1, $3);
+    fill(Codes::opcode[$1], Codes::mod["limmed"], Codes::reg[$5], 15);
     section->next_word(Section::make_word(instruction));
 }
     | LD INTEGER COMMA REGISTER terminate {
-    fill(Codes::opcode[$1], Codes::mod["lmem"], Codes::reg[$4], 0, 0, to_int($2));
+    bool alt = (std::string($4) == "%r1");
+
+    fill(Codes::opcode["push"], Codes::mod["push"], Codes::reg["%sp"], 0, alt ? 2 : 1, -1);
+    section->next_word(Section::make_word(instruction));
+
+    section->new_jump(to_int($2), "");
+    fill(Codes::opcode[$1], Codes::mod["limmed"], alt ? 2 : 1, 15);
+    section->next_word(Section::make_word(instruction));
+
+    fill(Codes::opcode[$1], Codes::mod["lmem"], Codes::reg[$4], alt ? 2 : 1);
+    section->next_word(Section::make_word(instruction));
+
+    fill(Codes::opcode["pop"], Codes::mod["pop"], alt ? 2 : 1, Codes::reg["%sp"], 0, 1);
     section->next_word(Section::make_word(instruction));
 }
     | LD SYMBOL COMMA REGISTER terminate {
-    symbol_table.new_occurrence($2, section->get_name(), section->line());
-    fill(Codes::opcode[$1], Codes::mod["lmem"], Codes::reg[$4]);
+    bool alt = (std::string($4) == "%r1");
+
+    fill(Codes::opcode["push"], Codes::mod["push"], Codes::reg["%sp"], 0, alt ? 2 : 1, -1);
+    section->next_word(Section::make_word(instruction));
+
+    section->new_jump(-1, $2);
+    fill(Codes::opcode[$1], Codes::mod["limmed"], alt ? 2 : 1, 15);
+    section->next_word(Section::make_word(instruction));
+
+    fill(Codes::opcode[$1], Codes::mod["lmem"], Codes::reg[$4], alt ? 2 : 1);
+    section->next_word(Section::make_word(instruction));
+
+    fill(Codes::opcode["pop"], Codes::mod["pop"], alt ? 2 : 1, Codes::reg["%sp"], 0, 1);
     section->next_word(Section::make_word(instruction));
 }
     | LD REGISTER COMMA REGISTER terminate {
@@ -248,12 +268,13 @@ ld: LD IMMED INTEGER COMMA REGISTER terminate {
 };
 
 st: ST REGISTER COMMA INTEGER terminate {
-    fill(Codes::opcode[$1], Codes::mod[$1], 0, 0, Codes::reg[$2], to_int($4));
+    section->new_jump(to_int($4), "");
+    fill(Codes::opcode[$1], Codes::mod["stdir"], 15, 0, Codes::reg[$2]);
     section->next_word(Section::make_word(instruction));
 }
     | ST REGISTER COMMA SYMBOL terminate {
-    symbol_table.new_occurrence($4, section->get_name(), section->line());
-    fill(Codes::opcode[$1], Codes::mod[$1], 0, 0, Codes::reg[$2]);
+    section->new_jump(-1, $4);
+    fill(Codes::opcode[$1], Codes::mod["stdir"], 15, 0, Codes::reg[$2]);
     section->next_word(Section::make_word(instruction));
 }
     | ST REGISTER COMMA REGISTER terminate {

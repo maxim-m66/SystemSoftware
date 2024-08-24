@@ -71,7 +71,7 @@ FILENAME = test1
 
 toolchain:
 	./$(ASEMBLER_OUT) tests/$(FILENAME).s
-	./$(LINKER_OUT) -o $(FILENAME).hex $(FILENAME).o -hex
+	./$(LINKER_OUT) -o $(FILENAME).hex $(FILENAME).o -hex -place=data@0x2000
 	./$(EMULATOR_OUT) $(FILENAME).hex
 
 

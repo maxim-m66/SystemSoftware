@@ -12,7 +12,7 @@ int Memory::operator[](uint32 address) {
     int ret = 0;
     for (int i = 0; i < 4; i++) {
         uint32 byte = this->data[address + i];
-        ret |= (byte << (i*8));
+        ret |= (byte << (i * 8));
     }
     return ret;
 }
@@ -36,10 +36,15 @@ void Memory::decode(uint32 address, uint8 *op, uint8 *mod, uint8 *ra, uint8 *rb,
     *ra = (this->data[address + 1] & 0xF0) >> 4;
     *rb = this->data[address + 1] & 0xF;
     *rc = (this->data[address + 2] & 0xF0) >> 4;
-    *displacement = ((short)(this->data[address + 2] & 0xF) << 8) | this->data[address + 3];
+    *displacement = ((short) (this->data[address + 2] & 0xF) << 8) | this->data[address + 3];
+    if ((*displacement & 0x800) != 0) *displacement |= 0xF000;
 }
 
 void Memory::set(uint32 address, uint32 value) {
+    if (address >= TERM_OUT and address <= TERM_OUT + 3) {
+        std::cout << (char) value;
+        return;
+    }
     uint8 b0 = value & 0xFF;
     uint8 b1 = (value & 0xFF00) >> 8;
     uint8 b2 = (value & 0xFF0000) >> 16;

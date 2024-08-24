@@ -103,7 +103,7 @@ void FinishedSection::fill(std::string &filename, std::vector<uint8> &old) {
 }
 
 int FinishedSection::get_symbol_value(std::string &filename, int byte) {
-    return subsections_start[filename] + byte;
+    return this->start_address + subsections_start[filename] + byte;
 }
 
 void FinishedSection::print() {
@@ -129,12 +129,12 @@ void FinishedSection::symbolize(const std::string &file, int location, uint32 va
     if (whole) {
         uint16 b0 = value & 0xFF, b1 = value & 0xFF00, b2 = value & 0xFF0000, b3 = value & 0xFF000000;
         this->bytes[location] = b0;
-        this->bytes[location + 1] = b1;
-        this->bytes[location + 2] = b2;
-        this->bytes[location + 3] = b3;
+        this->bytes[location + 1] = b1 >> 8;
+        this->bytes[location + 2] = b2 >> 16;
+        this->bytes[location + 3] = b3 >> 24;
     } else {
         uint16 octet = value & 0xFF;
-        uint8 quartet = value & 0xF00;
+        uint8 quartet = (value & 0xF00) >> 8;
         this->bytes[location + 3] = octet;
         this->bytes[location + 2] = (this->bytes[location + 2] & 0xF0) | quartet;
     }

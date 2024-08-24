@@ -51,7 +51,7 @@ void Section::symbolise(int index, int value, bool whole) {
         this->bytes[index] = b0;
     } else {
         uint32 halfbyte = value & 0xF00, byte = value & 0xFF;
-        this->bytes[index + 2] |= halfbyte;
+        this->bytes[index + 2] |= (halfbyte >> 8);
         this->bytes[index + 3] = byte;
     }
 }

@@ -7,8 +7,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/resenje.dir/src/asembler.cpp.o.d"
   "CMakeFiles/resenje.dir/src/codes.cpp.o"
   "CMakeFiles/resenje.dir/src/codes.cpp.o.d"
-  "CMakeFiles/resenje.dir/src/elf.cpp.o"
-  "CMakeFiles/resenje.dir/src/elf.cpp.o.d"
   "CMakeFiles/resenje.dir/src/emulator.cpp.o"
   "CMakeFiles/resenje.dir/src/emulator.cpp.o.d"
   "CMakeFiles/resenje.dir/src/int_util.cpp.o"

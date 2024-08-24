@@ -15,7 +15,8 @@
 					"source" : ".",
 					"targetIndexes" : 
 					[
-						0
+						0,
+						1
 					]
 				}
 			],
@@ -30,7 +31,8 @@
 					"name" : "resenje",
 					"targetIndexes" : 
 					[
-						0
+						0,
+						1
 					]
 				}
 			],
@@ -38,8 +40,15 @@
 			[
 				{
 					"directoryIndex" : 0,
+					"id" : "emulator::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-emulator-Debug-a0666843382dbb7cd1ac.json",
+					"name" : "emulator",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
 					"id" : "resenje::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-resenje-Debug-5f57ce45e91264ad2479.json",
+					"jsonFile" : "target-resenje-Debug-2aa4142093b18f89d7d8.json",
 					"name" : "resenje",
 					"projectIndex" : 0
 				}

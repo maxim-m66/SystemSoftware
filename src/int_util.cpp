@@ -37,11 +37,11 @@ std::string to_my_string(std::string binary) {
     return ret;
 }
 
-int to_int(std::string s) {
+long to_int(std::string s) {
     return to_int(s.c_str());
 }
 
-int to_int(const char *string) {
+long to_int(const char *string) {
     int base = 10;
     int start = 0;
     int end = strlen(string);
@@ -50,7 +50,7 @@ int to_int(const char *string) {
     else if (string[1] == 'o') base = 8;
     else if (string[1] == 'b') base = 2;
     if (base != 10) start = 2;
-    int ret = digits[string[start]];
+    long ret = digits[string[start]];
     for (int i = start + 1; i < end; i++)
         ret = ret * base + digits[string[i]];
     return ret;

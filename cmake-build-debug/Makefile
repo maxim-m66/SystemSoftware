@@ -129,6 +129,19 @@ resenje/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/build
 .PHONY : resenje/fast
 
+#=============================================================================
+# Target rules for targets named emulator
+
+# Build rule for target.
+emulator: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 emulator
+.PHONY : emulator
+
+# fast build rule for target.
+emulator/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/emulator.dir/build.make CMakeFiles/emulator.dir/build
+.PHONY : emulator/fast
+
 src/LSymTable.o: src/LSymTable.cpp.o
 .PHONY : src/LSymTable.o
 
@@ -225,36 +238,13 @@ src/codes.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/codes.cpp.s
 .PHONY : src/codes.cpp.s
 
-src/elf.o: src/elf.cpp.o
-.PHONY : src/elf.o
-
-# target to build an object file
-src/elf.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/elf.cpp.o
-.PHONY : src/elf.cpp.o
-
-src/elf.i: src/elf.cpp.i
-.PHONY : src/elf.i
-
-# target to preprocess a source file
-src/elf.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/elf.cpp.i
-.PHONY : src/elf.cpp.i
-
-src/elf.s: src/elf.cpp.s
-.PHONY : src/elf.s
-
-# target to generate assembly for a file
-src/elf.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/elf.cpp.s
-.PHONY : src/elf.cpp.s
-
 src/emulator.o: src/emulator.cpp.o
 .PHONY : src/emulator.o
 
 # target to build an object file
 src/emulator.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/emulator.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/emulator.dir/build.make CMakeFiles/emulator.dir/src/emulator.cpp.o
 .PHONY : src/emulator.cpp.o
 
 src/emulator.i: src/emulator.cpp.i
@@ -263,6 +253,7 @@ src/emulator.i: src/emulator.cpp.i
 # target to preprocess a source file
 src/emulator.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/emulator.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/emulator.dir/build.make CMakeFiles/emulator.dir/src/emulator.cpp.i
 .PHONY : src/emulator.cpp.i
 
 src/emulator.s: src/emulator.cpp.s
@@ -271,6 +262,7 @@ src/emulator.s: src/emulator.cpp.s
 # target to generate assembly for a file
 src/emulator.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/emulator.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/emulator.dir/build.make CMakeFiles/emulator.dir/src/emulator.cpp.s
 .PHONY : src/emulator.cpp.s
 
 src/int_util.o: src/int_util.cpp.o
@@ -375,6 +367,7 @@ src/reg.o: src/reg.cpp.o
 # target to build an object file
 src/reg.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/reg.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/emulator.dir/build.make CMakeFiles/emulator.dir/src/reg.cpp.o
 .PHONY : src/reg.cpp.o
 
 src/reg.i: src/reg.cpp.i
@@ -383,6 +376,7 @@ src/reg.i: src/reg.cpp.i
 # target to preprocess a source file
 src/reg.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/reg.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/emulator.dir/build.make CMakeFiles/emulator.dir/src/reg.cpp.i
 .PHONY : src/reg.cpp.i
 
 src/reg.s: src/reg.cpp.s
@@ -391,6 +385,7 @@ src/reg.s: src/reg.cpp.s
 # target to generate assembly for a file
 src/reg.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/resenje.dir/build.make CMakeFiles/resenje.dir/src/reg.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/emulator.dir/build.make CMakeFiles/emulator.dir/src/reg.cpp.s
 .PHONY : src/reg.cpp.s
 
 src/section.o: src/section.cpp.o
@@ -449,6 +444,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... emulator"
 	@echo "... resenje"
 	@echo "... src/LSymTable.o"
 	@echo "... src/LSymTable.i"
@@ -462,9 +458,6 @@ help:
 	@echo "... src/codes.o"
 	@echo "... src/codes.i"
 	@echo "... src/codes.s"
-	@echo "... src/elf.o"
-	@echo "... src/elf.i"
-	@echo "... src/elf.s"
 	@echo "... src/emulator.o"
 	@echo "... src/emulator.i"
 	@echo "... src/emulator.s"
