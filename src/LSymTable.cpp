@@ -9,6 +9,8 @@ std::set<std::string> LSymTable::required_symbols;
 std::vector<std::string> LSymTable::undefined_symbols;
 std::unordered_map<std::string, uint32> LSymTable::symbol_values;
 std::unordered_map<std::string, LSymTable::BindTimes> LSymTable::encountered_symbols;
+std::unordered_map<std::string, LSymTable::op_op> LSymTable::equs;
+
 
 void LSymTable::new_occurrence(const std::string &file, const std::string &section, const std::string &symbol, int line,
                                bool whole, bool local) {
@@ -59,6 +61,45 @@ void LSymTable::resolve_symbols() {
         int value = LinkerSection::get_symbol_value(data.section, data.file, data.byte);
         symbol_values[data.symbol] = value;
     }
+    std::vector<std::string> trash;
+    while (!equs.empty()) {
+        int size = equs.size();
+        for (auto &data: equs) {
+            std::string symbol = data.first;
+            auto &operands = data.second.operands;
+            auto &operators = data.second.operators;
+            int i = 0;
+            if (operands[i].is_symbol and symbol_values.find(operands[i].symbol) == symbol_values.end()) continue;
+            int value = operands[i].is_symbol ? symbol_values[operands[i].symbol] : to_int(operands[i].symbol);
+            bool broken = false;
+            for (i++; i < operands.size(); i++) {
+                if (operands[i].is_symbol and symbol_values.find(operands[i].symbol) == symbol_values.end()) {
+                    broken = true;
+                    break;
+                }
+                int addon = operands[i].is_symbol ? symbol_values[operands[i].symbol] : to_int(operands[i].symbol);
+                if (operators[i - 1] == "+") {
+                    value += addon;
+                } else if (operators[i - 1] == "-") {
+                    value -= addon;
+                } else if (operators[i - 1] == "*") {
+                    value *= addon;
+                } else if (operators[i - 1] == "/") {
+                    value /= addon;
+                }
+            }
+            if (broken) continue;
+            symbol_values[symbol] = value;
+            trash.push_back(symbol);
+        }
+        for (auto &data: trash) equs.erase(data);
+        trash.clear();
+        if (equs.size() == size) {
+            std::cerr << "Unable to resolve symbols:";
+            for (auto &data: equs) std::cerr << " " << data.first;
+            exit(-1);
+        }
+    }
 }
 
 void LSymTable::relocate() {
@@ -93,4 +134,10 @@ void LSymTable::out_obj(std::ostream &out) {
             out << section << " " << byte << " " << data.whole << std::endl;
         }
     }
+}
+
+void LSymTable::new_equ(const std::string &symbol, std::vector<pair> &operands, std::vector<std::string> &operators) {
+    equs[symbol] = *(new op_op);
+    equs[symbol].operands = operands;
+    equs[symbol].operators = operators;
 }

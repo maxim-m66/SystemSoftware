@@ -15,6 +15,11 @@
 
 class LSymTable {
 public:
+    struct pair {
+        bool is_symbol;
+        std::string symbol;
+    };
+
     static void
     new_occurrence(const std::string &file, const std::string &section, const std::string &symbol, int line, bool whole,
                    bool local);
@@ -30,7 +35,13 @@ public:
 
     static void out_obj(std::ostream &out);
 
+    static void new_equ(const std::string &symbol, std::vector<pair> &operands, std::vector<std::string> &operators);
+
 private:
+    struct op_op {
+        std::vector<pair> operands;
+        std::vector<std::string > operators;
+    };
     ///marks a place where said symbol is required, and whether it is required on a full line
     struct Entry {
         std::string file;
@@ -57,6 +68,7 @@ private:
     static std::vector<std::string> undefined_symbols;
     static std::unordered_map<std::string, uint32> symbol_values;
     static std::unordered_map<std::string, BindTimes> encountered_symbols;
+    static std::unordered_map<std::string, op_op> equs;
 };
 
 

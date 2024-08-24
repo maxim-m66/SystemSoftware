@@ -5,6 +5,11 @@
 #include <vector>
 #include <set>
 
+struct pair {
+    bool is_symbol;
+    std::string symbol;
+};
+
 class SymbolTable {
 public:
     struct SectionLine {
@@ -41,6 +46,10 @@ public:
 
     static void check_multiple_defs();
 
+    static void new_equ(const std::string &symbol, std::vector<pair> &operands, std::vector<std::string> &operators);
+
+    static std::string filename;
+
 protected:
     explicit SymbolTable() {}
 
@@ -50,11 +59,16 @@ private:
         std::string section;
         std::vector<SectionLine> occurences;
     };
+    struct op_op {
+        std::vector<pair> operands;
+        std::vector<std::string > operators;
+    };
     std::unordered_map<std::string, ValueOccurence*> symbols;
     std::set<std::string> _extern;
     std::set<std::string> _global;
     static SymbolTable* table;
     static std::unordered_map<std::string, std::vector<int>> multiple_defs;
+    static std::unordered_map<std::string, op_op> equs;
 };
 
 #endif //SYMBOL_TABLE_HPP

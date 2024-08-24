@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
 
     string input_filename, output_filename;
 
-    if (argc != 2 && argc != 4) return 0;
+    if (argc != 2 && argc != 4) return -1;
 
     if (argc == 2) {
         input_filename = argv[1];
@@ -33,12 +33,15 @@ int main(int argc, char **argv) {
         return -1;
     }
 
+    SymbolTable::filename = output_filename;
+
     ifstream input;
     input.open(input_filename);
     if (!input) {
         cerr << "Unable to open file " << input_filename << endl;
         return -1;
     }
+    int syntax = false;
     for (int lineN = 0; !input.eof(); lineN++) {
         string line;
         getline(input, line);
@@ -46,6 +49,7 @@ int main(int argc, char **argv) {
         fileline++;
         int ret = yyparse();
         if (was_error) {
+            syntax = true;
             was_error = false;
             continue;
         } else if (ret) {
@@ -53,6 +57,10 @@ int main(int argc, char **argv) {
         }
     }
     input.close();
+
+    if (syntax) {
+        return -1;
+    }
 
     SymbolTable::check_multiple_defs();
     Section::set_jumps();

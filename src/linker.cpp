@@ -9,23 +9,41 @@ using namespace std;
 
 std::string read_file(const std::string &filename) {
 
-    std::ifstream file("tests/" + filename);
+    std::ifstream file(filename);
     if (!file.is_open()) return "Unable to open file " + filename;
 
     LinkerSection::add_file(filename);
 
     std::string header, name, section;
     int elements, binding, lines, line, byte, whole;
+    bool is_equ;
 
     file >> header >> elements;
     if (header != "symbols" or elements < 0) return "No symbol table in file " + filename;
     for (int i = 0; i < elements; i++) {
-        file >> name >> binding >> lines;
-        if (binding != EXTERN_SYMBOL) {
+        file >> name >> binding >> is_equ >> lines;
+        if (binding != EXTERN_SYMBOL and !is_equ) {
             file >> section >> byte;
             if (!LSymTable::new_definition(filename, section, name, byte, binding == LOCAL_SYMBOL)) {
                 return "Multiple definitions of a symbol: " + name;
             }
+        } else if (is_equ) {
+            int Noperands;
+            file >> Noperands;
+            vector<LSymTable::pair> operands;
+            vector<std::string> operators;
+            for (int j = 0; j < Noperands; j++) {
+                std::string symbol;
+                bool is_symbol;
+                file >> symbol >> is_symbol;
+                operands.push_back({is_symbol, symbol});
+            }
+            for (int j = 0; j < Noperands - 1; j++) {
+                std::string operator1;
+                file >> operator1;
+                operators.push_back(operator1);
+            }
+            LSymTable::new_equ(binding == LOCAL_SYMBOL ? filename + "#" + name : name, operands, operators);
         }
         for (int j = 0; j < lines; j++) {
             file >> section >> line >> whole;
@@ -46,7 +64,7 @@ std::string read_file(const std::string &filename) {
 int main(int argc, char **argv) {
 
     bool executable = false, relocatable = false;
-    string input, output_filename = "out.hex";
+    string input, output_filename = "tests/out.hex";
     vector<string> files;
     unordered_map<string, int> starts;
     for (int i = 1; i < argc; i++) {
@@ -83,7 +101,7 @@ int main(int argc, char **argv) {
     LinkerSection::link();
 
     ofstream output;
-    output.open("tests/" + output_filename, ios::out);
+    output.open(output_filename, ios::out);
     if (executable) {
         LSymTable::check_undefined();
         LSymTable::resolve_symbols();

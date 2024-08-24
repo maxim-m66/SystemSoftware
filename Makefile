@@ -29,7 +29,7 @@ EMULATOR_FLAGS = -o $(EMULATOR_OUT)
 # Input variables
 MSG ?=Update
 
-all: lexer parser asembler runasm linker runlinker
+all: asembler linker emulator toolchain
 justlink: linker runlinker
 
 asembler: $(ASEMBLER_IN) lexer parser
@@ -67,10 +67,10 @@ cleanlinker:
 cleanemulator:
 	rm -f $(EMULATOR_OUT)
 
-FILENAME = test1
+FILENAME = tests/test1
 
 toolchain:
-	./$(ASEMBLER_OUT) tests/$(FILENAME).s
+	./$(ASEMBLER_OUT) $(FILENAME).s
 	./$(LINKER_OUT) -o $(FILENAME).hex $(FILENAME).o -hex -place=data@0x2000
 	./$(EMULATOR_OUT) $(FILENAME).hex
 

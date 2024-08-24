@@ -261,7 +261,7 @@ int main(int argc, char **argv) {
         exit(0);
     }
 
-    ifstream in("tests/" + string(argv[1]));
+    ifstream in(argv[1]);
     if (!in.is_open()) {
         cerr << "Unable to open file " + string(argv[1]);
         exit(0);

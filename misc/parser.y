@@ -15,16 +15,15 @@ Section *section = Section::get_section("txt");
 
 SymbolTable &symbol_table = SymbolTable::get_table();
 
-struct pair {
-    bool is_symbol;
-    std::string symbol;
-};
-
 extern int fileline;
 
 extern bool was_error;
 
 std::vector<pair> symbols;
+
+std::vector<pair> operands;
+
+std::vector<std::string> operators;
 
 uint8 instruction[8] = {};
 
@@ -79,12 +78,18 @@ values_list: INTEGER {
 };
 
 expression: INTEGER {
+    operands.push_back({false, $1});
 }
     | SYMBOL {
+    operands.push_back({true, $1});
 }
     | INTEGER OPERATOR expression {
+    operators.push_back($2);
+    operands.push_back({false, $1});
 }
     | SYMBOL OPERATOR expression {
+    operators.push_back($2);
+    operands.push_back({true, $1});
 };
 
 terminate: COMMENT |;
@@ -138,10 +143,12 @@ label: SYMBOL LABEL terminate {
 ascii: ASCII STRING terminate {
     std::string string = $2;
     section->ascii(string);
-
 };
 
 equ: EQU SYMBOL COMMA expression terminate {
+    SymbolTable::new_equ(std::string($2), operands, operators);
+    operators.clear();
+    operands.clear();
 };
 
 inone: INONE terminate {
