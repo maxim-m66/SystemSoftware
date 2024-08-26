@@ -22,35 +22,28 @@
 
 using namespace std;
 
-// Function to set the terminal to non-blocking mode
 void setNonBlocking(int fd) {
     int flags = fcntl(fd, F_GETFL, 0);
     fcntl(fd, F_SETFL, flags | O_NONBLOCK);
 }
 
-// Function to configure the terminal settings
 void configureTerminal(termios &oldt, termios &newt) {
-    // Get current terminal settings
     tcgetattr(STDIN_FILENO, &oldt);
 
-    // Copy old settings to new settings
     newt = oldt;
 
-    // Disable canonical mode and echo
     newt.c_lflag &= ~(ICANON | ECHO);
 
-    // Apply the new settings immediately
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
 }
 
-// Function to restore the terminal settings
 void restoreTerminal(const termios &oldt) {
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
 }
 
-int registers[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x10000, 0000000};
+uint32 registers[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x40000000};
 
-int csr[3] = {0b111, 0, 0};
+int csr[3] = {0, 0, 0};
 
 unordered_map<long, long> timer_period = {
         {0, 500000000},
@@ -68,8 +61,6 @@ uint64 time_ms = 0;
 bool emulation = true;
 
 Memory &MEM = Memory::get();
-
-int olda = 0;
 
 void emulate() {
     char ch = getchar();
@@ -90,22 +81,23 @@ void emulate() {
             emulation = false;
             return;
         case 0b0001:
-            registers[sp]-=4;
-            MEM.set(registers[sp], csr[status]);
-            registers[sp]-=4;
+            registers[sp] -= 4;
             MEM.set(registers[sp], registers[pc]);
+            registers[sp] -= 4;
+            MEM.set(registers[sp], csr[status]);
             csr[cause] = 4;
             csr[status] = csr[status] & ~1;
+            registers[pc] = csr[handler];
             break;
         case 0b0010:
             switch (mod) {
                 case 0b0000:
-                    registers[sp]-=4;
+                    registers[sp] -= 4;
                     MEM.set(registers[sp], registers[pc]);
                     registers[pc] = registers[a] + registers[b] + displacement;
                     break;
                 case 0b0001:
-                    registers[sp]-=4;
+                    registers[sp] -= 4;
                     MEM.set(registers[sp], registers[pc]);
                     registers[pc] = MEM[registers[a] + registers[b] + displacement];
                     break;
@@ -234,13 +226,12 @@ void emulate() {
             csr[cause] = 1;
             break;
     }
-    if (csr[cause] != 0 && (csr[status] & INTERRUPT_MASK) == 0) {
+    if ((csr[cause] == 2 or csr[cause] == 3) && (csr[status] & INTERRUPT_MASK) == 0) {
         if (csr[cause] == 2 && (csr[status] & TIMER_MASK) != 0) return;
         if (csr[cause] == 3 && (csr[status] & TERMINAL_MASK) != 0) return;
-        csr[cause] = 0;
-        registers[sp]-=4;
+        registers[sp] -= 4;
         MEM.set(registers[sp], registers[pc]);
-        registers[sp]-=4;
+        registers[sp] -= 4;
         MEM.set(registers[sp], registers[status]);
         registers[status] = 0b111;
         registers[pc] = csr[handler];
@@ -249,23 +240,22 @@ void emulate() {
 
 int main(int argc, char **argv) {
 
-    termios oldt, newt;
-
-    // Configure the terminal
-    configureTerminal(oldt, newt);
-
-    setNonBlocking(STDIN_FILENO);
-
     if (argc != 2) {
-        cerr << "Invalid number of aruments provided";
-        exit(0);
+        cerr << "Invalid number of aruments provided" << std::endl;
+        exit(-1);
     }
 
     ifstream in(argv[1]);
     if (!in.is_open()) {
-        cerr << "Unable to open file " + string(argv[1]);
-        exit(0);
+        cerr << "Unable to open file " + string(argv[1]) << std::endl;
+        exit(-1);
     }
+
+    termios oldt, newt;
+
+    configureTerminal(oldt, newt);
+
+    setNonBlocking(STDIN_FILENO);
 
     MEM.load(in);
 

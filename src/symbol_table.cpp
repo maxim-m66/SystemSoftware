@@ -49,7 +49,7 @@ std::ostream &operator<<(std::ostream &out, const SymbolTable &table) {
     for (auto &pair: table.symbols) {
         int linking;
         bool is_equ = SymbolTable::equs.find(pair.first) != SymbolTable::equs.end();
-        if (table._extern.find(pair.first) != table._extern.end()) {
+        if (table._extern.find(pair.first) != table._extern.end() and pair.second->value == -1) {
             linking = EXTERN_SYMBOL;
         } else if (table._global.find(pair.first) != table._global.end()) {
             linking = GLOBAL_SYMBOL;

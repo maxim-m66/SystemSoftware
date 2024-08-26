@@ -12,7 +12,7 @@ class Memory {
 public:
     static Memory &get();
 
-    int operator[](uint32 address);
+    uint32 operator[](uint32 address);
 
     void set(uint32 address, uint32 value);
 

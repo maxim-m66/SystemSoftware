@@ -101,6 +101,7 @@ end: END terminate {
 global: GLOBAL symbol_list terminate {
     for (auto& pair : symbols) {
         symbol_table.get_global().insert(pair.symbol);
+        symbol_table.get_extern().insert(pair.symbol);
     }
     symbols.clear();
 };
@@ -157,7 +158,7 @@ inone: INONE terminate {
 };
 
 ret: RET terminate {
-    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg["%pc"], Codes::reg["%sp"], 0, 1);
+    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg["%pc"], Codes::reg["%sp"], 0, 4);
     section->next_word(Section::make_word(instruction));
 };
 
@@ -200,7 +201,7 @@ pop: POP REGISTER terminate {
 };
 
 alo: ALO REGISTER COMMA REGISTER terminate {
-    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$4], Codes::reg[$2], Codes::reg[$4]);
+    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$4], Codes::reg[$4], Codes::reg[$2]);
     section->next_word(Section::make_word(instruction));
 };
 
@@ -303,12 +304,12 @@ st: ST REGISTER COMMA INTEGER terminate {
 };
 
 csrrd: CSRRD SYSREG COMMA REGISTER terminate {
-    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$2], Codes::reg[$4]);
+    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$4], Codes::reg[$2]);
     section->next_word(Section::make_word(instruction));
 };
 
 csrwr: CSRWR REGISTER COMMA SYSREG terminate {
-    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$2], Codes::reg[$4]);
+    fill(Codes::opcode[$1], Codes::mod[$1], Codes::reg[$4], Codes::reg[$2]);
     section->next_word(Section::make_word(instruction));
 };
 

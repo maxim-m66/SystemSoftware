@@ -10,7 +10,7 @@ std::vector<std::string> LSymTable::undefined_symbols;
 std::unordered_map<std::string, uint32> LSymTable::symbol_values;
 std::unordered_map<std::string, LSymTable::BindTimes> LSymTable::encountered_symbols;
 std::unordered_map<std::string, LSymTable::op_op> LSymTable::equs;
-
+extern std::string output_filename;
 
 void LSymTable::new_occurrence(const std::string &file, const std::string &section, const std::string &symbol, int line,
                                bool whole, bool local) {
@@ -110,6 +110,7 @@ void LSymTable::relocate() {
 
 void LSymTable::out_obj(std::ostream &out) {
     out << "symbols " << encountered_symbols.size() << std::endl;
+    std::set<std::string> locals;
     for (auto &pair: encountered_symbols) {
         int binding;
         if (pair.second.local) {
@@ -119,12 +120,27 @@ void LSymTable::out_obj(std::ostream &out) {
         } else {
             binding = GLOBAL_SYMBOL;
         }
-        out << pair.first << " " << binding << " " << pair.second.times << std::endl;
-        if (binding != EXTERN_SYMBOL) {
+        bool equ = equs.find(pair.first) != equs.end();
+        out << pair.first << " " << binding << " " << equ << " " << pair.second.times << std::endl;
+        if (binding != EXTERN_SYMBOL and not equ) {
             for (auto &data: symbol_defs) {
                 if (data.symbol != pair.first) continue;
                 int byte = data.byte + LinkerSection::get_file_displacement(data.section, data.file);
                 out << data.section << " " << byte << std::endl;
+            }
+        } else if (equ) {
+            std::vector<LSymTable::pair> operands = equs[pair.first].operands;
+            std::vector<std::string> operators = equs[pair.first].operators;
+            out << operands.size() << std::endl;
+            for (int i = 0; i < operands.size(); i++) {
+                std::string sym = operands[i].symbol;
+                if (encountered_symbols[sym].local) {
+                    sym = output_filename + "#" + sym;
+                }
+                out << sym << " " << operands[i].is_symbol << ((i == operands.size() - 1) ? "\n" : " ");
+            }
+            for (int i = 0; i < operators.size(); i++) {
+                out << operators[i] << ((i == operators.size() - 1) ? "\n" : " ");
             }
         }
         for (auto &data: linker_table) {

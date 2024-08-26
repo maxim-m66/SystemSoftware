@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
     Section::set_jumps();
 
     ofstream output;
-    output.open(output_filename, ios::out);
+    output.open(output_filename, std::ios::out | std::ios::trunc);
     SymbolTable &symbol_table = SymbolTable::get_table();
     output << symbol_table;
     Section::out_obj(output);

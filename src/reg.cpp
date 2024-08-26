@@ -8,8 +8,8 @@ Memory::Memory() {
     this->data = new uint8[0xFFFFFFFF];
 }
 
-int Memory::operator[](uint32 address) {
-    int ret = 0;
+uint32 Memory::operator[](uint32 address) {
+    uint32 ret = 0;
     for (int i = 0; i < 4; i++) {
         uint32 byte = this->data[address + i];
         ret |= (byte << (i * 8));
@@ -19,7 +19,7 @@ int Memory::operator[](uint32 address) {
 
 void Memory::load(std::istream &in) {
     in >> std::hex;
-    int address;
+    uint32 address;
     uint16 byte;
     std::string junk;
     while (in >> address >> junk) {

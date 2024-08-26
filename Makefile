@@ -71,7 +71,7 @@ FILENAME = tests/test1
 
 toolchain:
 	./$(ASEMBLER_OUT) $(FILENAME).s
-	./$(LINKER_OUT) -o $(FILENAME).hex $(FILENAME).o -hex -place=data@0x2000
+	./$(LINKER_OUT) -o $(FILENAME).hex $(FILENAME).o -hex -place=txt@0x40000000
 	./$(EMULATOR_OUT) $(FILENAME).hex
 
 
@@ -80,4 +80,31 @@ git: clean
 	git commit -m "${MSG}"
 	git push -u origin master
 
-.PHONY: all clean asembler run lexer parser linker runlinker cleanlinker justlink cleanemulator
+nivoa:
+	./$(ASEMBLER_OUT) -o tests/nivo-a/main.o tests/nivo-a/main.s
+	./$(ASEMBLER_OUT) -o tests/nivo-a/math.o tests/nivo-a/math.s
+	./$(ASEMBLER_OUT) -o tests/nivo-a/handler.o tests/nivo-a/handler.s
+	./$(ASEMBLER_OUT) -o tests/nivo-a/isr_timer.o tests/nivo-a/isr_timer.s
+	./$(ASEMBLER_OUT) -o tests/nivo-a/isr_terminal.o tests/nivo-a/isr_terminal.s
+	./$(ASEMBLER_OUT) -o tests/nivo-a/isr_software.o tests/nivo-a/isr_software.s
+	./$(LINKER_OUT) -hex \
+		-place=my_code@0x40000000 -place=math@0xF0000000 \
+		-o tests/nivo-a/program.hex \
+		tests/nivo-a/handler.o tests/nivo-a/math.o tests/nivo-a/main.o tests/nivo-a/isr_terminal.o tests/nivo-a/isr_timer.o tests/nivo-a/isr_software.o
+	./$(EMULATOR_OUT) tests/nivo-a/program.hex
+
+nivob:
+	./$(ASEMBLER_OUT) -o tests/nivo-b/main.o tests/nivo-b/main.s
+	./$(ASEMBLER_OUT) -o tests/nivo-b/handler.o tests/nivo-b/handler.s
+	./$(ASEMBLER_OUT) -o tests/nivo-b/isr_terminal.o tests/nivo-b/isr_terminal.s
+	./$(ASEMBLER_OUT) -o tests/nivo-b/isr_timer.o tests/nivo-b/isr_timer.s
+	./$(LINKER_OUT) -hex \
+      -place=my_code@0x40000000 \
+      -o tests/nivo-b/program.hex \
+      tests/nivo-b/main.o tests/nivo-b/isr_terminal.o tests/nivo-b/isr_timer.o tests/nivo-b/handler.o
+	./$(EMULATOR_OUT) tests/nivo-b/program.hex
+
+cleana:
+	rm -f tests/nivo-a/*.o tests/nivo-a/*.hex
+
+.PHONY: all clean asembler run lexer parser linker runlinker cleanlinker justlink cleanemulator nivoa cleana nivob

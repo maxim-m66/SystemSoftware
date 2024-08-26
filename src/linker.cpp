@@ -61,12 +61,14 @@ std::string read_file(const std::string &filename) {
     return "";
 }
 
+string output_filename = "";
+
 int main(int argc, char **argv) {
 
     bool executable = false, relocatable = false;
-    string input, output_filename = "tests/out.hex";
+    string input;
     vector<string> files;
-    unordered_map<string, int> starts;
+    unordered_map<string, long> starts;
     for (int i = 1; i < argc; i++) {
         input = argv[i];
         if (input == "-o") {
@@ -74,7 +76,7 @@ int main(int argc, char **argv) {
             continue;
         } else if (input.size() >= EQ and input[EQ] == '=') {
             int at = input.find('@');
-            int position = to_int(input.substr(at + 1));
+            long position = to_int(input.substr(at + 1));
             LinkerSection::add_start_position(input.substr(EQ + 1, at - EQ - 1), position);
         } else if (input == "-hex") {
             executable = true;
@@ -90,18 +92,20 @@ int main(int argc, char **argv) {
         exit(0);
     }
 
+    if (output_filename == "") output_filename = string("tests/out.") + (executable ? "hex" : "o");
+
     for (auto &file: files) {
         std::string error = read_file(file);
         if (error != "") {
             cerr << error << "\n";
-            exit(0);
+            exit(-1);
         }
     }
 
     LinkerSection::link();
 
     ofstream output;
-    output.open(output_filename, ios::out);
+    output.open(output_filename, std::ios::out | std::ios::trunc);
     if (executable) {
         LSymTable::check_undefined();
         LSymTable::resolve_symbols();

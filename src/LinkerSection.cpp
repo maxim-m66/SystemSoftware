@@ -12,7 +12,7 @@ std::vector<std::string> LinkerSection::section_order;
 std::set<std::string> LinkerSection::section_set;
 std::unordered_map<std::string, OldSection *> LinkerSection::old_sections;
 std::unordered_map<std::string, FinishedSection *> LinkerSection::finished_sections;
-std::unordered_map<std::string, int> LinkerSection::start_positions;
+std::unordered_map<std::string, long> LinkerSection::start_positions;
 std::vector<LinkerSection::triplet> LinkerSection::overlaps;
 
 void OldSection::add_file(const std::string &file) {
@@ -62,7 +62,7 @@ void OldSection::print() {
 }
 
 void LinkerSection::link() {
-    int current_address = 0;
+    long current_address = 0;
     for (auto &current_section: section_order) {
         if (start_positions.find(current_section) != start_positions.end()) {
             current_address = start_positions[current_section];
@@ -127,11 +127,11 @@ LinkerSection::symbolize(const std::string &file, const std::string &section, in
 void FinishedSection::symbolize(const std::string &file, int location, uint32 value, bool whole) {
     location = location + this->subsections_start[file];
     if (whole) {
-        uint16 b0 = value & 0xFF, b1 = value & 0xFF00, b2 = value & 0xFF0000, b3 = value & 0xFF000000;
+        uint32 b0 = value & 0xFF, b1 = value & 0xFF00, b2 = value & 0xFF0000, b3 = value & 0xFF000000;
         this->bytes[location] = b0;
-        this->bytes[location + 1] = b1 >> 8;
-        this->bytes[location + 2] = b2 >> 16;
-        this->bytes[location + 3] = b3 >> 24;
+        this->bytes[location + 1] = (b1 >> 8);
+        this->bytes[location + 2] = (b2 >> 16);
+        this->bytes[location + 3] = (b3 >> 24);
     } else {
         uint16 octet = value & 0xFF;
         uint8 quartet = (value & 0xF00) >> 8;
@@ -165,13 +165,13 @@ void LinkerSection::out_hex(std::ostream &out) {
 }
 
 void FinishedSection::out_hex(std::ostream &out, bool continued) {
-    int location = this->start_address;
+    long location = this->start_address;
     if (not continued && location % BREAK != 0) {
-        out << std::setw(4) << std::setfill('0') << (location / BREAK) * BREAK << ": ";
+        out << std::setw(8) << std::setfill('0') << (location / BREAK) * BREAK << ": ";
         for (int i = 0; i < location % BREAK; i++) out << "00 ";
     }
     for (int i = 0; i < this->bytes.size(); i++, location++) {
-        if (location % BREAK == 0) out << std::setw(4) << std::setfill('0') << location << ": ";
+        if (location % BREAK == 0) out << std::setw(8) << std::setfill('0') << location << ": ";
         out << std::setw(2) << std::setfill('0') << (uint16) this->bytes[i] << ((location % BREAK == 7) ? "\n" : " ");
     }
 }

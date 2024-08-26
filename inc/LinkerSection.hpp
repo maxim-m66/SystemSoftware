@@ -24,7 +24,7 @@ public:
         file_order.push_back(filename);
     }
 
-    static void add_start_position(const std::string &section, int position) {
+    static void add_start_position(const std::string &section, long position) {
         start_positions[section] = position;
     }
 
@@ -41,7 +41,7 @@ public:
 protected:
     struct triplet {
         std::string section;
-        int start;
+        long start;
         int len;
         bool continues;
     };
@@ -51,7 +51,7 @@ protected:
     static std::set<std::string> section_set;
     static std::unordered_map<std::string, OldSection *> old_sections;
     static std::unordered_map<std::string, FinishedSection *> finished_sections;
-    static std::unordered_map<std::string, int> start_positions;
+    static std::unordered_map<std::string, long> start_positions;
 };
 
 class OldSection : public LinkerSection {
@@ -73,7 +73,7 @@ private:
 
 class FinishedSection : public LinkerSection {
 public:
-    FinishedSection(std::string &name, int start_address) : name(name), start_address(start_address), length(0) {};
+    FinishedSection(std::string &name, long start_address) : name(name), start_address(start_address), length(0) {};
 
     void fill(std::string &filename, std::vector<uint8> &old);
 
@@ -83,7 +83,7 @@ public:
 
     int get_size() const { return length; }
 
-    int where_next() const {return start_address + length;}
+    long where_next() const {return start_address + length;}
 
     static void print();
 
@@ -96,8 +96,8 @@ public:
 private:
     std::vector<uint8> bytes;
     std::string name;
-    std::unordered_map<std::string, int> subsections_start;
-    int start_address;
+    std::unordered_map<std::string, long> subsections_start;
+    long start_address;
     int length;
 };
 
