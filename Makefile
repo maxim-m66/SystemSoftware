@@ -26,18 +26,12 @@ ASEMBLER_FLAGS = -o $(ASEMBLER_OUT)
 LINKER_FLAGS = -o $(LINKER_OUT)
 EMULATOR_FLAGS = -o $(EMULATOR_OUT)
 
+FILENAME = tests/test1
+
 # Input variables
 MSG ?=Update
 
-all: asembler linker emulator toolchain
-justlink: linker runlinker
-
-asembler: $(ASEMBLER_IN) lexer parser
-	$(COMPILE) $(ASEMBLER_FLAGS) $(ASEMBLER_IN) $(LEXER_OUT) $(PARSER_OUT)
-
-runasm:
-	./$(ASEMBLER_OUT) tests/test1.s
-	./$(ASEMBLER_OUT) tests/test2.s
+all: asembler linker emulator
 
 lexer: $(LEXER_IN)
 	$(LEX) $(LEX_FLAGS) $(LEXER_IN)
@@ -46,20 +40,14 @@ parser: $(PARSER_IN)
 	$(PARSE) $(PARSE_FLAGS) $(PARSER_IN)
 	mv src/*.hpp inc/
 
+asembler: $(ASEMBLER_IN) lexer parser
+	$(COMPILE) $(ASEMBLER_FLAGS) $(ASEMBLER_IN) $(LEXER_OUT) $(PARSER_OUT)
+
 emulator: cleanemulator
 	$(COMPILE) $(EMULATOR_FLAGS) $(EMULATOR_IN)
 
-runemu:
-	./$(EMULATOR_OUT)
-
 linker: cleanlinker
 	$(COMPILE) $(LINKER_FLAGS) $(LINKER_IN)
-
-runlinker: linker
-	./$(LINKER_OUT) -o out1.hex test1.o test2.o -place=bss@0x201 -place=txt@0x400 -hex
-
-clean: cleana cleanb
-	rm -f $(LEXER_OUT) $(LEXER_HEADER) $(PARSER_OUT) $(PARSER_HEADER) $(ASEMBLER_OUT) $(LINKER_OUT) $(EMULATOR_OUT) tests/*.o tests/*.hex
 
 cleanlinker:
 	rm -f $(LINKER_OUT)
@@ -67,13 +55,13 @@ cleanlinker:
 cleanemulator:
 	rm -f $(EMULATOR_OUT)
 
-FILENAME = tests/test1
+clean: cleana cleanb cleanc
+	rm -f $(LEXER_OUT) $(LEXER_HEADER) $(PARSER_OUT) $(PARSER_HEADER) $(ASEMBLER_OUT) $(LINKER_OUT) $(EMULATOR_OUT) tests/*.o tests/*.hex
 
-toolchain:
+run:
 	./$(ASEMBLER_OUT) $(FILENAME).s
 	./$(LINKER_OUT) -o $(FILENAME).hex $(FILENAME).o -hex -place=txt@0x40000000
 	./$(EMULATOR_OUT) $(FILENAME).hex
-
 
 git: clean
 	git add .
@@ -124,4 +112,4 @@ cleanb:
 cleanc:
 	rm -f tests/nivo-b/*.o tests/nivo-c/*.hex
 
-.PHONY: all clean asembler run lexer parser linker runlinker cleanlinker justlink cleanemulator nivoa cleana nivob
+.PHONY: all clean asembler run lexer parser linker cleanlinker cleanemulator nivoa cleana nivob run git
