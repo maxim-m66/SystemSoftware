@@ -104,10 +104,24 @@ nivob:
       tests/nivo-b/main.o tests/nivo-b/isr_terminal.o tests/nivo-b/isr_timer.o tests/nivo-b/handler.o
 	./$(EMULATOR_OUT) tests/nivo-b/program.hex
 
+nivoc:
+	./$(ASEMBLER_OUT) -o tests/nivo-c/main.o tests/nivo-c/main.s
+	./$(ASEMBLER_OUT) -o tests/nivo-c/handler.o tests/nivo-c/handler.s
+	./$(ASEMBLER_OUT) -o tests/nivo-c/isr_terminal.o tests/nivo-c/isr_terminal.s
+	./$(ASEMBLER_OUT) -o tests/nivo-c/isr_timer.o tests/nivo-c/isr_timer.s
+	./$(LINKER_OUT) -hex \
+	  -place=code@0x40000000 \
+	  -o tests/nivo-c/program.hex \
+	  tests/nivo-c/main.o tests/nivo-c/isr_terminal.o tests/nivo-c/isr_timer.o tests/nivo-c/handler.o
+	./$(EMULATOR_OUT) tests/nivo-c/program.hex
+
 cleana:
 	rm -f tests/nivo-a/*.o tests/nivo-a/*.hex
 
 cleanb:
 	rm -f tests/nivo-b/*.o tests/nivo-b/*.hex
+
+cleanc:
+	rm -f tests/nivo-b/*.o tests/nivo-c/*.hex
 
 .PHONY: all clean asembler run lexer parser linker runlinker cleanlinker justlink cleanemulator nivoa cleana nivob

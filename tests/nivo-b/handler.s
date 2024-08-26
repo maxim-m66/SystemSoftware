@@ -3,7 +3,6 @@
 .global handler
 .section my_handler
 handler:
-halt
     push %r1
     push %r2
     csrrd %cause, %r1
@@ -14,7 +13,6 @@ halt
 finish:
     pop %r2
     pop %r1
-    csrwr %r0, %cause
     iret
 # obrada prekida od tajmera
 handle_timer:

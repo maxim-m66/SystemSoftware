@@ -44,7 +44,7 @@ bool LSymTable::new_definition(const std::string &file, const std::string &secti
 
 void LSymTable::check_undefined() {
     for (auto &symbol: required_symbols) {
-        if (defined_symbols.find(symbol) == defined_symbols.end()) {
+        if (defined_symbols.find(symbol) == defined_symbols.end() and equs.find(symbol) == equs.end()) {
             undefined_symbols.push_back(symbol);
         }
     }
@@ -53,7 +53,7 @@ void LSymTable::check_undefined() {
     for (auto &symbol: undefined_symbols) {
         std::cerr << symbol << ";\n";
     }
-    exit(0);
+    exit(-1);
 }
 
 void LSymTable::resolve_symbols() {
@@ -106,6 +106,9 @@ void LSymTable::relocate() {
     for (auto &data: linker_table) {
         LinkerSection::symbolize(data.file, data.section, data.byte, symbol_values[data.symbol], data.whole);
     }
+//    for ( auto & pair : symbol_values) {
+//        std::cout << std::hex << pair.first << " " << pair.second << std::endl;
+//    }
 }
 
 void LSymTable::out_obj(std::ostream &out) {

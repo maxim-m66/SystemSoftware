@@ -17,8 +17,8 @@
 #define cause 2
 
 #define TIMER_MASK 1
-#define TERMINAL_MASK 3
-#define INTERRUPT_MASK 5
+#define TERMINAL_MASK (1 << 1)
+#define INTERRUPT_MASK (1 << 2)
 
 using namespace std;
 
@@ -73,6 +73,9 @@ void emulate() {
     short displacement;
 
     MEM.decode(registers[pc], &op, &mod, &a, &b, &c, &displacement);
+
+//        cout << hex << (int) op << " "<<(int) mod << " "<< (int) a << " " << (int) b << " " <<(int) c << " " <<(int) displacement << " ";
+
     registers[pc] += 4;
     registers[0] = 0;
 
@@ -233,7 +236,7 @@ void emulate() {
         MEM.set(registers[sp], registers[pc]);
         registers[sp] -= 4;
         MEM.set(registers[sp], registers[status]);
-        registers[status] = 0b111;
+        csr[status] |= INTERRUPT_MASK;
         registers[pc] = csr[handler];
     }
 }

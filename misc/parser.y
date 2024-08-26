@@ -163,6 +163,8 @@ ret: RET terminate {
 };
 
 iret: IRET terminate {
+    fill(Codes::opcode["csrwr"], Codes::mod["csrwr"], Codes::reg["%cause"]);
+    section->next_word(Section::make_word(instruction));
     fill(Codes::opcode["pop"], Codes::mod[$1], Codes::reg["%status"], Codes::reg["%sp"], 0, 4);
     section->next_word(Section::make_word(instruction));
     fill(Codes::opcode["ret"], Codes::mod["ret"], Codes::reg["%pc"], Codes::reg["%sp"], 0, 4);
