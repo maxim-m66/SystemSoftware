@@ -58,7 +58,7 @@ linker: cleanlinker
 runlinker: linker
 	./$(LINKER_OUT) -o out1.hex test1.o test2.o -place=bss@0x201 -place=txt@0x400 -hex
 
-clean:
+clean: cleana cleanb
 	rm -f $(LEXER_OUT) $(LEXER_HEADER) $(PARSER_OUT) $(PARSER_HEADER) $(ASEMBLER_OUT) $(LINKER_OUT) $(EMULATOR_OUT) tests/*.o tests/*.hex
 
 cleanlinker:
@@ -106,5 +106,8 @@ nivob:
 
 cleana:
 	rm -f tests/nivo-a/*.o tests/nivo-a/*.hex
+
+cleanb:
+	rm -f tests/nivo-b/*.o tests/nivo-b/*.hex
 
 .PHONY: all clean asembler run lexer parser linker runlinker cleanlinker justlink cleanemulator nivoa cleana nivob
