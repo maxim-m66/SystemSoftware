@@ -13,7 +13,7 @@ octadigit [0-7]
 octal "0o"({octadigit})+
 bindigit [0-1]
 binary "0b"({bindigit})+
-integer {decimal}|{hexa}|{octal}|{binary}
+integer "-"?{decimal}|{hexa}|{octal}|{binary}
 lowercase [a-z]
 uppercase [A-Z]
 letter {lowercase}|{uppercase}|"_"

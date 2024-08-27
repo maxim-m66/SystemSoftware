@@ -113,7 +113,6 @@ void LSymTable::relocate() {
 
 void LSymTable::out_obj(std::ostream &out) {
     out << "symbols " << encountered_symbols.size() << std::endl;
-    std::set<std::string> locals;
     for (auto &pair: encountered_symbols) {
         int binding;
         if (pair.second.local) {
@@ -137,11 +136,12 @@ void LSymTable::out_obj(std::ostream &out) {
             out << operands.size() << std::endl;
             for (int i = 0; i < operands.size(); i++) {
                 std::string sym = operands[i].symbol;
-                if (encountered_symbols[sym].local) {
+                if (operands[i].is_symbol and encountered_symbols[sym].local) {
                     sym = output_filename + "#" + sym;
                 }
                 out << sym << " " << operands[i].is_symbol << ((i == operands.size() - 1) ? "\n" : " ");
             }
+            std::cout << encountered_symbols.size() << " ";
             for (int i = 0; i < operators.size(); i++) {
                 out << operators[i] << ((i == operators.size() - 1) ? "\n" : " ");
             }

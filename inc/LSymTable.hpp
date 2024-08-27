@@ -38,6 +38,7 @@ public:
     static void new_equ(const std::string &symbol, std::vector<pair> &operands, std::vector<std::string> &operators);
 
 private:
+public:
     struct op_op {
         std::vector<pair> operands;
         std::vector<std::string > operators;

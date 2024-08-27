@@ -85,7 +85,7 @@ void LinkerSection::link() {
             overlaps[i].continues = true;
         } else if (overlaps[i].start + overlaps[i].len > overlaps[i + 1].start) {
             std::cerr << "Sections overlap" << std::endl;
-            exit(0);
+            exit(-1);
         }
     }
 }

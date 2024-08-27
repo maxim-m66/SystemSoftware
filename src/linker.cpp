@@ -89,7 +89,7 @@ int main(int argc, char **argv) {
 
     if (relocatable == executable) {
         cerr << "output type not defined";
-        exit(0);
+        exit(-1);
     }
 
     if (output_filename == "") output_filename = string("tests/out.") + (executable ? "hex" : "o");

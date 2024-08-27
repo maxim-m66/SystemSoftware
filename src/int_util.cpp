@@ -1,6 +1,7 @@
 #include <string>
 #include <cstring>
 #include <unordered_map>
+#include <iostream>
 #include "../inc/int_util.hpp"
 
 static std::unordered_map<char, int> digits = {
@@ -44,14 +45,19 @@ long to_int(std::string s) {
 long to_int(const char *string) {
     int base = 10;
     int start = 0;
+    bool neg = false;
+    if (string[0] == '-') {
+        start = 1;
+        neg = true;
+    }
     int end = strlen(string);
-    if (end < 3);
-    else if (string[1] == 'x') base = 16;
-    else if (string[1] == 'o') base = 8;
-    else if (string[1] == 'b') base = 2;
-    if (base != 10) start = 2;
+    if (end < start + 3);
+    else if (string[start + 1] == 'x') base = 16;
+    else if (string[start + 1] == 'o') base = 8;
+    else if (string[start + 1] == 'b') base = 2;
+    if (base != 10) start += 2;
     long ret = digits[string[start]];
     for (int i = start + 1; i < end; i++)
         ret = ret * base + digits[string[i]];
-    return ret;
+    return neg ? -ret : ret;
 }

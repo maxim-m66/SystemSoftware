@@ -56,7 +56,10 @@ cleanemulator:
 	rm -f $(EMULATOR_OUT)
 
 clean: cleana cleanb cleanc
-	rm -f $(LEXER_OUT) $(LEXER_HEADER) $(PARSER_OUT) $(PARSER_HEADER) $(ASEMBLER_OUT) $(LINKER_OUT) $(EMULATOR_OUT) tests/*.o tests/*.hex
+	rm -f $(LEXER_OUT) $(LEXER_HEADER) $(PARSER_OUT) $(PARSER_HEADER) $(ASEMBLER_OUT) $(LINKER_OUT) $(EMULATOR_OUT) tests/*.o tests/*.hex mm210092.zip
+
+rlc:
+	./linker -relocatable -o tests/rel.o tests/test1.o
 
 run:
 	./$(ASEMBLER_OUT) $(FILENAME).s
@@ -112,4 +115,10 @@ cleanb:
 cleanc:
 	rm -f tests/nivo-b/*.o tests/nivo-c/*.hex
 
+zip: clean
+	zip -r mm210092.zip inc
+	zip -r -u mm210092.zip misc
+	zip -r -u mm210092.zip src
+	zip -r -u mm210092.zip tests
+	zip -u mm210092 Makefile
 .PHONY: all clean asembler run lexer parser linker cleanlinker cleanemulator nivoa cleana nivob run git
